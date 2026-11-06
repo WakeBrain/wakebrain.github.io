@@ -163,3 +163,9 @@ details p { color: var(--color-ink-2); }
 .wait fieldset label { display: inline-flex; align-items: center; gap: var(--space-xs); color: var(--color-ink); }
 .wait input[type=radio] { accent-color: var(--color-accent); }
 .wait .btn { justify-self: start; margin-top: var(--space-xs); }
+
+.story.more ol { margin-bottom: var(--space-2xl); }
+.coming { display: inline-block; margin-left: var(--space-xs); padding: 0 var(--space-xs); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font: 500 var(--text-sm)/1.6 var(--font-ui); color: var(--color-accent); text-transform: lowercase; vertical-align: middle; }
+.coming-line { margin-top: var(--space-xl); max-width: 64ch; color: var(--color-ink-2); }
+.coming-line a { color: var(--color-ink); }
+.plan .fine { margin: 0; font-size: var(--text-sm); color: var(--color-muted); }
