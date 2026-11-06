@@ -202,7 +202,7 @@ document.getElementById("w-form").addEventListener("submit", async e => {
   const f = e.target, d = Object.fromEntries(new FormData(f));
   if (d._honey) return;
   delete d._honey;
-  try { if (!localStorage.getItem("ws")) { localStorage.setItem("ws", "1"); hit("signup-" + d.plan); hit("signup-" + d.plan + "-" + tagOf(d.ref)); } } catch (err) {}
+  try { if (!localStorage.getItem("ws")) { localStorage.setItem("ws", "1"); hit("signup-" + d.plan).then(() => hit("signup-" + d.plan + "-" + tagOf(d.ref))); } } catch (err) {}
   f.querySelector("button").disabled = true;
   await fetch("https://api.web3forms.com/submit", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ ...d, access_key: "a05360e3-c3eb-4e73-ae00-8e2bf8fa3432", subject: "Wake waitlist: " + d.plan, from_name: "Wake waitlist" }), signal: AbortSignal.timeout(8000) }).catch(() => {});
   f.hidden = true;
@@ -211,7 +211,7 @@ document.getElementById("w-form").addEventListener("submit", async e => {
 try {
   if (!localStorage.getItem("wv")) {
     localStorage.setItem("wv", "1");
-    hit("visits"); hit("visits-" + tagOf(ref));
+    hit("visits").then(() => hit("visits-" + tagOf(ref)));
   }
 } catch (e) {}
 document.querySelectorAll("[data-plan]").forEach(a => a.addEventListener("click", () => { document.querySelector(`input[name=plan][value=${a.dataset.plan}]`).checked = true; }));
