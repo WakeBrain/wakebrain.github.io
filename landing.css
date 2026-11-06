@@ -172,8 +172,8 @@ details p { color: var(--color-ink-2); }
 
 /* the promise travels: a to-do appears in one repo, a gold thread runs along the top edge to the next, and it is ticked with its receipt */
 .story ol.demo { position: relative; }
-.story ol.demo::before { content: ""; position: absolute; left: 0; top: 0; height: 2px; width: 0; background: var(--color-accent); transition: width calc(var(--dur-long) * 3) var(--ease-out); }
-.story ol.demo.play::before { width: 100%; }
+.story ol.demo::before { content: ""; position: absolute; left: 0; top: 0; height: 2px; width: 100%; background: var(--color-accent); transform: scaleX(0); transform-origin: left; transition: transform calc(var(--dur-long) * 3) var(--ease-out); }
+.story ol.demo.play::before { transform: scaleX(1); }
 .todo { display: inline-flex; align-items: center; gap: var(--space-xs); margin-top: var(--space-xs); padding: var(--space-2xs) var(--space-sm); border: 1px solid var(--color-rule-2); border-radius: var(--radius-pill); font-size: var(--text-sm); color: var(--color-ink); transition: opacity var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out); }
 .todo i { width: var(--space-xs); height: var(--space-xs); border-radius: 50%; border: 1.5px solid var(--color-rule-2); transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out); }
 .js .story li .todo { opacity: 0; transform: translateY(var(--space-2xs)); }
