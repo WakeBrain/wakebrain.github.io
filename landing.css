@@ -53,7 +53,17 @@ main > section + section { margin-top: var(--section-gap-s); }
 .hero-note { margin-top: 20px; font-size: var(--text-sm); color: var(--color-ink-2); }
 
 /* the rest of the page */
-.bento h2, .how h2, .needs h2, .pricing h2 { margin-bottom: var(--space-xl); }
+.story h2, .how h2, .needs h2, .pricing h2 { margin-bottom: var(--space-xl); }
+
+/* the story: one promise kept across two repos, ending in the receipt the app shows */
+.story ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap-columns); }
+.story li { display: flex; flex-direction: column; gap: var(--space-xs); padding-top: var(--space-md); border-top: 1px solid var(--color-rule-2); }
+.story h3 { font: 400 var(--text-xl)/1.1 var(--font-display); color: var(--color-ink); }
+.story li p { max-width: 32ch; color: var(--color-ink-2); }
+.receipt { display: flex; flex-direction: column; gap: var(--space-2xs); width: fit-content; max-width: 100%; margin-top: var(--space-xl); padding: var(--space-md) var(--space-lg); border: 1px solid var(--color-rule-2); border-radius: var(--radius-ctl); background: var(--surface-glass); color: var(--color-ink); }
+.receipt b { color: var(--color-accent); font-weight: 600; }
+.receipt span { font-size: var(--text-sm); color: var(--color-ink-2); }
+.story .tiles { margin-top: var(--space-3xl); }
 .tiles { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap-columns); }
 .tile { grid-column: span 4; margin: 0; display: flex; flex-direction: column; gap: var(--space-sm); min-width: 0; }
 .tile.lead-tile, .tile.wide { grid-column: span 8; }
@@ -136,6 +146,7 @@ details p { color: var(--color-ink-2); }
   .foot div { grid-column: span 6; }
 }
 @media (max-width: 40rem) {
+  .story ol { grid-template-columns: minmax(0, 1fr); }
   .nav nav { display: none; }
   .nav { gap: var(--space-sm); }
   .nav > .btn { margin-left: auto; }

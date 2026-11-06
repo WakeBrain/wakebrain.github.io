@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0e0e10">
-<meta name="description" content="Wake keeps your ideas, projects, meetings and coding-agent sessions in one Markdown vault on your Mac, with an app to read it.">
-<title>Wake: a second brain your agents fill in</title>
+<meta name="description" content="Wake writes down what you promise in each Claude Code or Codex session, then shows where it got done, even in another repo. Plain Markdown on your Mac.">
+<title>Wake: nothing you promise slips through</title>
 <link rel="preload" href="fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="landing.css">
@@ -33,19 +33,25 @@
   <div class="mapbox" aria-hidden="true" data-fade="left"></div>
   <section class="hero" aria-labelledby="hero-h">
     <div class="hero-text" data-quiet>
-      <h1 id="hero-h">a second brain your agents fill in</h1>
-      <p class="hero-lede">Your agents take the notes, and Wake shows you what is warm.</p>
+      <h1 id="hero-h">nothing you promise slips through</h1>
+      <p class="hero-lede">Promise it in one repo, finish it in another, see the proof.</p>
       <div class="acts"><a class="btn primary" href="#waitlist">join the waitlist</a><a class="btn" href="#pricing">pre-order, $59</a></div>
       <p class="hero-note">$59 once, after a 14-day free trial. One vault of plain Markdown on your Mac. Needs Claude Code.</p>
     </div>
   </section>
 
-  <section class="bento" id="app" aria-labelledby="app-h">
-    <h2 id="app-h">everything lands in one place</h2>
+  <section class="story" id="app" aria-labelledby="story-h">
+    <h2 id="story-h">one promise, two repos</h2>
+    <ol>
+      <li><h3>monday, in website</h3><p>You promise your agent the pricing page. Wake writes a to-do.</p></li>
+      <li><h3>wednesday, in checkout</h3><p>You open a session in another repo. It already sees that to-do.</p></li>
+      <li><h3>done</h3><p>That session ships it, and Wake ticks it off with a receipt.</p></li>
+    </ol>
+    <p class="receipt"><b>Done: add the pricing page</b> <span>promised Mon in website → done Wed in checkout, session “Pricing page”</span></p>
     <div class="tiles">
       <figure class="tile lead-tile">
-        <img src="img/app--today-desktop.png" width="1800" height="1125" alt="Today: the next to-do, then every open to-do with where it came from, beside the map">
-        <figcaption><b>today</b> Your to-dos, each with the session or meeting it came from.</figcaption>
+        <img src="img/app--today-desktop.png" width="1800" height="1125" alt="Today: a finished to-do with its receipt, the next to-do, then every open to-do, beside the map">
+        <figcaption><b>today</b> What you finished, where you promised it, and what is next.</figcaption>
       </figure>
       <figure class="tile">
         <img src="img/app--map-desktop.png" width="1800" height="1125" alt="Map: notes, people and tickets as a linked graph" loading="lazy">
