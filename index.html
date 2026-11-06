@@ -191,7 +191,9 @@ WakeMap({ draw: WAKE_DRAW });
 </script>
 <script src="landing.js"></script>
 <script>
-const ref = new URLSearchParams(location.search).get("ref");
+const fromHost = h => [["reddit", "reddit"], ["t.co", "x"], ["x.com", "x"], ["twitter", "x"], ["github", "gh"], ["ycombinator", "hn"], ["obsidian", "obsidian"], ["indiehackers", "ih"], ["linkedin", "linkedin"], ["google", "google"]].find(([k]) => h.includes(k))?.[1];
+let ref = new URLSearchParams(location.search).get("ref");
+try { if (!ref && document.referrer) ref = fromHost(new URL(document.referrer).hostname) || "other"; } catch (e) {}
 if (ref) document.getElementById("w-ref").value = ref.slice(0, 32);
 const tagOf = r => (r || "direct").replace(/[^a-z0-9-]/gi, "").slice(0, 24) || "direct";
 const hit = k => fetch("https://abacus.jasoncameron.dev/hit/wakebrain/" + k).catch(() => {});
