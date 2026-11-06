@@ -169,3 +169,18 @@ details p { color: var(--color-ink-2); }
 .coming-line { margin-top: var(--space-xl); max-width: 64ch; color: var(--color-ink-2); }
 .coming-line a { color: var(--color-ink); }
 .plan .fine { margin: 0; font-size: var(--text-sm); color: var(--color-muted); }
+
+/* the promise travels: a to-do appears in one repo, a gold thread runs along the top edge to the next, and it is ticked with its receipt */
+.story ol.demo { position: relative; }
+.story ol.demo::before { content: ""; position: absolute; left: 0; top: 0; height: 2px; width: 0; background: var(--color-accent); transition: width calc(var(--dur-long) * 3) var(--ease-out); }
+.story ol.demo.play::before { width: 100%; }
+.todo { display: inline-flex; align-items: center; gap: var(--space-xs); margin-top: var(--space-xs); padding: var(--space-2xs) var(--space-sm); border: 1px solid var(--color-rule-2); border-radius: var(--radius-pill); font-size: var(--text-sm); color: var(--color-ink); transition: opacity var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out); }
+.todo i { width: var(--space-xs); height: var(--space-xs); border-radius: 50%; border: 1.5px solid var(--color-rule-2); transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out); }
+.js .story li .todo { opacity: 0; transform: translateY(var(--space-2xs)); }
+.js .story li.on .todo { opacity: 1; transform: none; }
+.story li.done .todo { border-color: var(--color-accent); }
+.story li.done .todo i { background: var(--color-accent); border-color: transparent; }
+.js .receipt { opacity: 0; transition: opacity var(--dur-long) var(--ease-out); }
+.js .receipt.show { opacity: 1; }
+.replay { margin-top: var(--space-sm); border: 0; padding: var(--space-xs) 0; background: none; color: var(--color-ink-2); font-size: var(--text-sm); text-decoration: underline; text-decoration-color: var(--color-rule-2); text-underline-offset: 4px; cursor: pointer; }
+.replay:hover { color: var(--color-ink); text-decoration-color: var(--color-accent); }

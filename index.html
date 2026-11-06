@@ -42,12 +42,13 @@
 
   <section class="story" id="app" aria-labelledby="story-h">
     <h2 id="story-h">one promise, two repos</h2>
-    <ol>
-      <li><h3>monday, in website</h3><p>You promise your agent the pricing page. Wake writes a to-do.</p></li>
-      <li><h3>wednesday, in checkout</h3><p>You open a session in another repo. It already sees that to-do.</p></li>
-      <li><h3>done</h3><p>That session ships it, and Wake ticks it off with a receipt.</p></li>
+    <ol class="demo" id="demo">
+      <li><h3>monday, in website</h3><p>You promise your agent the pricing page. Wake writes a to-do.</p><p class="todo"><i aria-hidden="true"></i>Add the pricing page</p></li>
+      <li><h3>wednesday, in checkout</h3><p>You open a session in another repo. It already sees that to-do.</p><p class="todo"><i aria-hidden="true"></i>Add the pricing page</p></li>
+      <li><h3>done</h3><p>That session ships it, and Wake ticks it off with a receipt.</p><p class="todo"><i aria-hidden="true"></i>Add the pricing page</p></li>
     </ol>
     <p class="receipt"><b>Done: add the pricing page</b> <span>promised Mon in website → done Wed in checkout, session “Pricing page”</span></p>
+    <button type="button" class="replay" id="replay" hidden>play it again</button>
     <div class="tiles">
       <figure class="tile lead-tile">
         <img src="img/app--today-desktop.png" width="1800" height="1125" alt="Today: a finished to-do with its receipt, the next to-do, then every open to-do, beside the map">
