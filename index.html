@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0e0e10">
+<meta name="description" content="Wake keeps your ideas, projects, meetings and coding-agent sessions in one Markdown vault on your Mac, with an app to read it.">
+<title>Wake: a second brain your agents fill in</title>
+<link rel="preload" href="fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="landing.css">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+</head>
+<body class="landing">
+<a class="skip" href="#main">Skip to content</a>
+<canvas class="glow" aria-hidden="true"></canvas>
+<canvas class="sharp" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<canvas class="thread" aria-hidden="true"></canvas>
+<header class="nav" data-quiet>
+  <a class="mark" href="./">
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17 12 5l7 10Z" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="17" r="2.4" fill="currentColor"/><circle class="hot" cx="12" cy="5" r="2.4"/><circle cx="19" cy="15" r="2.4" fill="currentColor"/></svg>
+    wake
+  </a>
+  <nav aria-label="Page">
+    <a href="#app">the app</a>
+    <a href="#pricing">pricing</a>
+  </nav>
+  <a class="btn primary small" href="#waitlist">join the waitlist</a>
+</header>
+
+<main id="main">
+  <div class="mapbox" aria-hidden="true" data-fade="left"></div>
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="hero-text" data-quiet>
+      <h1 id="hero-h">a second brain your agents fill in</h1>
+      <p class="hero-lede">Your agents take the notes, and Wake shows you what is warm.</p>
+      <div class="acts"><a class="btn primary" href="#waitlist">join the waitlist</a><a class="btn" href="#pricing">pre-order, $59</a></div>
+      <p class="hero-note">$59 once, after a 14-day free trial. One vault of plain Markdown on your Mac. Needs Claude Code.</p>
+    </div>
+  </section>
+
+  <section class="bento" id="app" aria-labelledby="app-h">
+    <h2 id="app-h">everything lands in one place</h2>
+    <div class="tiles">
+      <figure class="tile lead-tile">
+        <img src="img/app--today-desktop.png" width="1800" height="1125" alt="Today: the next to-do, then every open to-do with where it came from, beside the map">
+        <figcaption><b>today</b> Your to-dos, each with the session or meeting it came from.</figcaption>
+      </figure>
+      <figure class="tile">
+        <img src="img/app--map-desktop.png" width="1800" height="1125" alt="Map: notes, people and tickets as a linked graph" loading="lazy">
+        <figcaption><b>map</b> Every note, person and ticket, and how they link.</figcaption>
+      </figure>
+      <figure class="tile">
+        <img src="img/app--inbox-desktop.png" width="1800" height="1125" alt="Inbox: one idea at a time, filed to a project, an area or a topic" loading="lazy">
+        <figcaption><b>inbox</b> Catch an idea now. File it to a project later.</figcaption>
+      </figure>
+      <figure class="tile wide">
+        <img src="img/app--board-desktop.png" width="1800" height="1125" alt="A board: notes and ideas laid out as cards with connections" loading="lazy">
+        <figcaption><b>boards</b> Lay notes and ideas out on a canvas, then ask about it.</figcaption>
+      </figure>
+      <figure class="tile half">
+        <img src="img/app--library-desktop.png" width="1800" height="1125" alt="Library: every note with the notes that link to it" loading="lazy">
+        <figcaption><b>library</b> Every note, with what points to it.</figcaption>
+      </figure>
+      <figure class="tile half">
+        <img src="img/app--decisions-desktop.png" width="1800" height="1125" alt="Decisions: a searchable log of what was decided and where" loading="lazy">
+        <figcaption><b>decisions</b> What was decided, where, and why.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="how" aria-labelledby="how-h">
+    <h2 id="how-h">it fills itself</h2>
+    <div class="diagram" role="img" aria-label="A finished Claude Code or Codex session becomes one Haiku note in your vault, which updates the to-dos and decisions every agent reads. Meetings and your calendar feed the same vault and a morning brief.">
+      <p class="path-name">your agents</p>
+      <ol class="path hot">
+        <li>session ends</li><li>one haiku note</li><li>~/Brain</li><li>to-dos and decisions, read by every agent</li>
+      </ol>
+      <p class="path-name">your day</p>
+      <ol class="path">
+        <li>meetings, calendar</li><li>~/Brain</li><li>morning brief</li>
+      </ol>
+    </div>
+    <p class="note">A note costs about 1,700 tokens in and 400 out, on your own Claude plan.</p>
+  </section>
+
+  <section class="files" aria-labelledby="files-h">
+    <div class="files-text">
+      <h2 id="files-h">plain files you own</h2>
+      <p>Markdown in a folder on your disk. It opens in Obsidian too. Stop using Wake and you keep every note.</p>
+      <div class="switch" role="group" aria-label="Show the vault">
+        <button type="button" aria-pressed="true" data-show="tree">as files</button>
+        <button type="button" aria-pressed="false" data-show="shot">in the app</button>
+      </div>
+    </div>
+    <div class="files-view">
+      <pre class="tree" data-pane="tree" aria-label="Vault folder layout">~/Brain
+  projects/    one note per repo or client
+  log/         sessions, decisions, to-dos by day
+  ideas/       the inbox
+  areas/       health, money, clients
+  meetings/    from Granola or Wispr
+  boards/      canvases, Obsidian format
+  briefs/      morning pages</pre>
+      <img data-pane="shot" hidden src="img/app--library-desktop.png" width="1800" height="1125" alt="The same notes in the Wake library" loading="lazy">
+    </div>
+  </section>
+
+  <section class="needs" aria-labelledby="needs-h">
+    <h2 id="needs-h">what it needs</h2>
+    <table>
+      <tbody>
+        <tr><th scope="row">a mac</th><td>macOS with Python 3.9 or newer.</td></tr>
+        <tr><th scope="row">claude code</th><td>Notes use Haiku through your Claude Code sign-in. No API key.</td></tr>
+        <tr><th scope="row">codex</th><td>Optional. It reads the same to-dos and decisions.</td></tr>
+        <tr><th scope="row">connectors</th><td>Optional: Granola, Wispr, Google Calendar, Slack, Jira.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="pricing" id="pricing" aria-labelledby="price-h">
+    <h2 id="price-h">$59 once</h2>
+    <div class="plans">
+      <div class="plan">
+        <h3>wake</h3>
+        <p class="price">$59 <span>once, a year of updates</span></p>
+        <ul>
+          <li>The whole app: today, inbox, projects, library, map, boards, decisions</li>
+          <li>Every agent sees your to-dos and decisions, in every repo</li>
+          <li>Meetings and calendar in your vault, and a morning brief</li>
+          <li>Agents tick off to-dos when they finish them, with proof</li>
+          <li>Ask your brain, and web research</li>
+        </ul>
+        <a class="btn primary" href="#waitlist" data-plan="pro">pre-order, $59</a>
+      </div>
+      <div class="plan">
+        <h3>wake + sync</h3>
+        <p class="price">$59 <span>+ about $5 a month</span></p>
+        <ul>
+          <li>Everything in Wake</li>
+          <li>The same vault on every Mac you use</li>
+          <li>Encrypted on the way; we can’t read your notes</li>
+        </ul>
+        <a class="btn" href="#waitlist" data-plan="sync">pre-order with sync</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="install" id="waitlist" aria-labelledby="wait-h">
+    <div>
+      <h2 id="wait-h">be first in</h2>
+      <p>Pre-orders pay nothing now. At launch you get a 14-day free trial, then a checkout link, and you can say no.</p>
+      <p class="thanks" id="w-thanks" hidden><strong>You’re on the list.</strong> One email at launch, nothing else.</p>
+      <form class="wait" id="w-form">
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+        <label for="w-email">email</label>
+        <input id="w-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+        <fieldset>
+          <legend>which plan</legend>
+          <label><input type="radio" name="plan" value="pro" checked> Wake, $59 once</label>
+          <label><input type="radio" name="plan" value="sync"> Wake + sync, $59 and about $5 a month</label>
+          <label><input type="radio" name="plan" value="less"> I want it, but not at $59</label>
+        </fieldset>
+        <label for="w-agents">your agents</label>
+        <select id="w-agents" name="agents">
+          <option>Claude Code</option><option>Claude Code and Codex</option><option>Codex only</option><option>something else</option>
+        </select>
+        <input type="hidden" name="ref" id="w-ref" value="direct">
+        <button class="btn primary" type="submit">pre-order, pay nothing now</button>
+      </form>
+      <details>
+        <summary>Does my code leave my machine?</summary>
+        <p>No server. A trimmed transcript goes to Claude through your sign-in, Codex sessions included. You can turn Codex notes off. Ask and Research, both optional, also send the notes they read to Claude.</p>
+      </details>
+    </div>
+    <img src="img/app--map-desktop.png" width="1800" height="1125" alt="The map of a demo vault" loading="lazy">
+  </section>
+</main>
+
+<footer class="foot">
+  <p class="mark">wake</p>
+  <div><a href="#app">the app</a><a href="#pricing">pricing</a><a href="#waitlist">waitlist</a></div>
+  <p class="fine">Not shipping yet. Everyone in the screenshots is invented.</p>
+</footer>
+<script src="graph.js"></script>
+<script src="ember-engine.js"></script>
+<script src="ember-map.js"></script>
+<script>
+WakeMap({ draw: WAKE_DRAW });
+</script>
+<script src="landing.js"></script>
+<script>
+const ref = new URLSearchParams(location.search).get("ref");
+if (ref) document.getElementById("w-ref").value = ref.slice(0, 32);
+const tagOf = r => (r || "direct").replace(/[^a-z0-9-]/gi, "").slice(0, 24) || "direct";
+const hit = k => fetch("https://abacus.jasoncameron.dev/hit/wakebrain/" + k).catch(() => {});
+document.getElementById("w-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = e.target, d = Object.fromEntries(new FormData(f));
+  if (d._honey) return;
+  delete d._honey;
+  try { if (!localStorage.getItem("ws")) { localStorage.setItem("ws", "1"); hit("signup-" + d.plan); hit("signup-" + d.plan + "-" + tagOf(d.ref)); } } catch (err) {}
+  f.querySelector("button").disabled = true;
+  await fetch("https://api.web3forms.com/submit", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ ...d, access_key: "a05360e3-c3eb-4e73-ae00-8e2bf8fa3432", subject: "Wake waitlist: " + d.plan, from_name: "Wake waitlist" }), signal: AbortSignal.timeout(8000) }).catch(() => {});
+  f.hidden = true;
+  document.getElementById("w-thanks").hidden = false;
+});
+try {
+  if (!localStorage.getItem("wv")) {
+    localStorage.setItem("wv", "1");
+    hit("visits"); hit("visits-" + tagOf(ref));
+  }
+} catch (e) {}
+document.querySelectorAll("[data-plan]").forEach(a => a.addEventListener("click", () => { document.querySelector(`input[name=plan][value=${a.dataset.plan}]`).checked = true; }));
+</script>
+</body>
+</html>

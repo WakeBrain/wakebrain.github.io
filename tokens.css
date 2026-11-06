@@ -1,0 +1,25 @@
+@font-face { font-family: "Geist"; src: url("fonts/geist.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("fonts/geist-mono.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Instrument Serif"; src: url("fonts/instrument-serif.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+:root {
+  color-scheme: dark;
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
+  --text-xs: 0.875rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.1875rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
+  --text-display-s: clamp(2.25rem, 4vw + 0.5rem, 3.75rem); --text-display: clamp(2.75rem, 5vw + 1rem, 5.25rem);
+  --text-section: clamp(2rem, 2.5vw + 1rem, 3.5rem); --text-title: clamp(1.25rem, 0.75vw + 0.875rem, 1.625rem); --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.375rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 560ms;
+  --container: 1440px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px; --section-gap-l: 176px; --ctl: 40px; --bar: 60px;
+  --z-light: 0; --z-thread: 1; --z-page: 2; --z-bar: 300; --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+  --color-paper: oklch(24% 0.08 305); --color-paper-hi: oklch(30% 0.095 305); --color-paper-lo: oklch(19% 0.07 305);
+  --color-surface: oklch(30% 0.085 305); --color-surface-2: oklch(35% 0.09 305);
+  --color-ink: oklch(97% 0.012 85); --color-ink-2: oklch(90% 0.03 305); --color-muted: oklch(81% 0.045 305);
+  --color-rule: oklch(40% 0.08 305); --color-rule-2: oklch(61% 0.075 305); --color-edge: oklch(97% 0.012 85 / 0.12);
+  --color-accent: oklch(86% 0.15 85); --color-accent-hi: oklch(92% 0.1 92); --color-accent-ink: oklch(24% 0.06 60); --color-focus: oklch(86% 0.15 85);
+  --color-coral: oklch(70% 0.16 45); --color-ember: oklch(62% 0.21 25); --color-core: oklch(97% 0.03 95); --color-cool: oklch(82% 0.07 305);
+  --surface-glass: oklch(30% 0.085 305 / 0.7); --surface-row: oklch(30% 0.085 305 / 0.66); --light-wash: oklch(70% 0.16 45 / 0.26);
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif; --font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-outlier: "Geist Mono", ui-monospace, monospace;
+  --radius-card: 20px; --radius-ctl: 12px; --radius-pill: 999px; --rule-hair: 1px;
+  --tracking-display: -0.02em; --display-weight: 400;
+}
