@@ -40,6 +40,10 @@
     </div>
   </section>
 
+  <section class="film" aria-label="Wake in 20 seconds">
+    <video id="film" src="video/wake.mp4" poster="video/wake.jpg" autoplay muted loop playsinline controls preload="metadata"></video>
+  </section>
+
   <section class="story" id="app" aria-labelledby="story-h">
     <h2 id="story-h">one promise, two repos</h2>
     <ol class="demo" id="demo">
@@ -140,7 +144,7 @@
         <tr><th scope="row">a mac</th><td>macOS with Python 3.9 or newer.</td></tr>
         <tr><th scope="row">claude code or codex</th><td>Notes are written through your own Claude Code sign-in, or through Codex. No API key. Both agents read the same to-dos and decisions.</td></tr>
         <tr><th scope="row">connectors</th><td>Optional, and off until you turn them on: Granola, Wispr, Google Calendar, Slack, Jira.</td></tr>
-        <tr><th scope="row">first open</th><td>Wake is a direct download. The first time, macOS says it cannot check it: press Done, open System Settings, Privacy and Security, and press Open Anyway. On macOS 14 and earlier, right-click Wake and choose Open.</td></tr>
+        <tr><th scope="row">first open</th><td>Wake will be a direct download. The first time, macOS says it cannot check it: press Done, open System Settings, Privacy and Security, and press Open Anyway. On macOS 14 and earlier, right-click Wake and choose Open.</td></tr>
       </tbody>
     </table>
   </section>
@@ -158,8 +162,8 @@
           <li>Agents tick off to-dos when they finish them, with proof</li>
           <li>Ask your brain, and web research</li>
         </ul>
-        <a class="btn primary" href="https://polar.sh/checkout/PLACEHOLDER" data-plan="pro">buy, $59 once</a>
-        <p class="fine">Pay once, then download. [refund policy: owner to confirm]</p>
+        <a class="btn primary" href="#waitlist" data-plan="pro">pre-order, pay nothing now</a>
+        <p class="fine">Pay when it ships. One email with the checkout link.</p>
       </div>
       <div class="plan">
         <h3>wake + sync <span class="coming">coming</span></h3>
@@ -175,7 +179,7 @@
     <div class="plans one">
       <div class="plan">
         <h3>super brain <span class="coming">coming</span></h3>
-        <p class="price small">a month, on top of Wake. [price: owner to confirm]</p>
+        <p class="price">$5 <span>a month, on top of Wake</span></p>
         <ul>
           <li>Sync puts your vault on every Mac. Super Brain puts it on your phone, and lets you share one project with a client</li>
           <li>Your brain on your phone: scan a code in Settings, add it to your home screen. Nothing else to install</li>
@@ -192,7 +196,7 @@
   <section class="install" id="waitlist" aria-labelledby="wait-h">
     <div>
       <h2 id="wait-h">be first in</h2>
-      <p>Pre-orders pay nothing now. At launch you get a checkout link: pay once, then download. [refund policy: owner to confirm]</p>
+      <p>Pre-orders pay nothing now. At launch you get a checkout link: pay once, then download.</p>
       <p class="thanks" id="w-thanks" hidden><strong>You’re on the list.</strong> One email at launch, nothing else.</p>
       <form class="wait" id="w-form">
         <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
@@ -202,7 +206,7 @@
           <legend>which plan</legend>
           <label><input type="radio" name="plan" value="pro" checked> Wake, $59 once</label>
           <label><input type="radio" name="plan" value="sync"> Wake + sync, $59 and about $5 a month</label>
-          <label><input type="radio" name="plan" value="super"> Super Brain: phone and sharing, [price: owner to confirm] a month</label>
+          <label><input type="radio" name="plan" value="super"> Super Brain: phone and sharing, $5 a month</label>
           <label><input type="radio" name="plan" value="less"> I want it, but not at $59</label>
         </fieldset>
         <label for="w-agents">your agents</label>
@@ -260,5 +264,6 @@ try {
 } catch (e) {}
 document.querySelectorAll("[data-plan]").forEach(a => a.addEventListener("click", () => { document.querySelector(`input[name=plan][value=${a.dataset.plan}]`).checked = true; }));
 </script>
+<script>matchMedia("(prefers-reduced-motion: reduce)").matches&&document.getElementById("film").pause()</script>
 </body>
 </html>
