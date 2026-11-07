@@ -172,7 +172,20 @@
         <a class="btn" href="#waitlist" data-plan="sync">join the waitlist</a>
       </div>
     </div>
-    <p class="coming-line"><span class="coming">coming</span> Super Brain: your brain on your phone, shared with the people you choose. Phone access and sharing are not for sale yet. <a href="#waitlist">Join the waitlist</a> to hear first.</p>
+    <div class="plans one">
+      <div class="plan">
+        <h3>super brain <span class="coming">coming</span></h3>
+        <p class="price">[price: owner to confirm] <span>a month, on top of Wake</span></p>
+        <ul>
+          <li>Your brain on your phone: scan a code in Settings, add it to your home screen. Nothing else to install</li>
+          <li>Give a teammate one project, as viewer or editor. Never your inbox, your other projects or the map</li>
+          <li>Every Mac you use, and every project shared with you, in one view. A Mac that is asleep shows its last copy</li>
+          <li>Your notes stay on your own devices. The phone reads them from your Mac, encrypted the whole way; our relay passes scrambled bytes it cannot read</li>
+        </ul>
+        <a class="btn" href="#waitlist" data-plan="super">join the waitlist</a>
+        <p class="fine">Not for sale yet. One email when it is.</p>
+      </div>
+    </div>
   </section>
 
   <section class="install" id="waitlist" aria-labelledby="wait-h">
@@ -188,6 +201,7 @@
           <legend>which plan</legend>
           <label><input type="radio" name="plan" value="pro" checked> Wake, $59 once</label>
           <label><input type="radio" name="plan" value="sync"> Wake + sync, $59 and about $5 a month</label>
+          <label><input type="radio" name="plan" value="super"> Super Brain: phone and sharing, [price: owner to confirm] a month</label>
           <label><input type="radio" name="plan" value="less"> I want it, but not at $59</label>
         </fieldset>
         <label for="w-agents">your agents</label>
@@ -200,6 +214,7 @@
       <details>
         <summary>Does my code leave my machine?</summary>
         <p>There is no Wake server. Two things leave on their own: when a session ends, a trimmed transcript goes to the model through your own Claude Code or Codex sign-in; and every morning, the titles of yesterday's sessions and your open to-dos go out for the brief. Ask and Research send what they read, only when you use them. Slack, Jira, meetings and calendar are off until you connect them. If you add a git remote to the vault folder, Wake pushes to it. Settings shows all of this, with the exact prompt, and a never-send list per project.</p>
+        <p>With Super Brain your notes stay on your own devices. Your phone, and each person you invite, reads from your Mac, encrypted the whole way; our relay passes scrambled bytes it cannot read, and every request is checked on your Mac. Disconnect a phone in Settings and it is out on its next request.</p>
       </details>
     </div>
     <img src="img/app--map-desktop.png" width="1800" height="1125" alt="The map of a demo vault" loading="lazy">
