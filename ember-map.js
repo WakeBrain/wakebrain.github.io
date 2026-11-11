@@ -2,7 +2,8 @@
 // Everything else is a cool, quiet lattice in the base colour. The light comes on outward from today's work.
 window.WAKE_DRAW = (function () {
   const RING = new Set(["memories", "meetings", "inbox"]);
-  let gold, coral, ember, core, cool, ink, ink2, deep, display;
+  let gold, coral, ember, core, cool, ink, ink2, deep, display, body, add, screen, accent;
+  addEventListener("wake-theme", () => { gold = null; });
   const pool = (c, S, x, y, R, stops) => {
     const g = c.createRadialGradient(x, y, 0, x, y, R);
     for (const [at, color, a] of stops) g.addColorStop(at, S.alpha(color, a));
@@ -11,12 +12,12 @@ window.WAKE_DRAW = (function () {
   const bezier = (t, u) => { const v = 1 - u, mx = t.x + (t.node.px - t.x) * 0.55, ex = t.node.px - 14; return [v * v * v * t.x + 3 * v * v * u * mx + 3 * v * u * u * mx + u * u * u * ex, v * v * v * t.y + 3 * v * v * u * t.y + 3 * v * u * u * t.node.py + u * u * u * t.node.py]; };
   return function (S) {
     const { ctx, glow, over } = S, page = document.body.classList, z = S.zoom;
-    if (!gold) { gold = S.token("--color-accent"); coral = S.token("--color-coral"); ember = S.token("--color-ember"); core = S.token("--color-core"); cool = S.token("--color-cool"); ink = S.token("--color-ink"); ink2 = S.token("--color-ink-2"); deep = S.token("--color-paper-lo"); display = S.token("--font-display"); }
+    if (!gold) { gold = S.token("--light-gold"); coral = S.token("--light-coral"); ember = S.token("--light-ember"); core = S.token("--light-core"); cool = S.token("--light-cool"); ink = S.token("--color-ink"); ink2 = S.token("--color-ink-2"); deep = S.token("--map-halo"); display = S.token("--font-display"); body = S.token("--font-body"); accent = S.token("--color-accent"); add = S.token("--map-add") || "lighter"; screen = S.token("--map-screen") || "screen"; }
     const on = (n) => S.ease((S.wake - 0.25 - n.hops * 0.3) / 1.1), breath = (n) => (S.still ? 1 : 1 + 0.05 * Math.sin(S.t * 0.7 + n.seed * 6.28));
     const warmth = (n) => Math.max(n.heat * on(n), n.lit * 0.9, n.flare);
 
     // 1. the broad light, on the soft canvas
-    glow.globalCompositeOperation = "screen";
+    glow.globalCompositeOperation = screen;
     let wx = 0, wy = 0, ws = 0;
     for (const n of S.nodes) if (n.heat >= 0.55) { const w = n.heat * on(n); wx += n.px * w; wy += n.py * w; ws += w; }
     if (ws > 0.01) { const day = Math.min(1, ws / 4); pool(glow, S, wx / ws, wy / ws, 500 * z, [[0, ember, 0.24 * day], [0.5, ember, 0.11 * day], [1, ember, 0]]); }
@@ -40,7 +41,7 @@ window.WAKE_DRAW = (function () {
     };
     ctx.globalCompositeOperation = "source-over";
     for (const l of S.links) { curve(ctx, l); ctx.strokeStyle = S.alpha(cool, 0.22); ctx.lineWidth = 1; ctx.stroke(); }
-    ctx.globalCompositeOperation = "lighter";
+    ctx.globalCompositeOperation = add;
     for (const l of S.links) {
       const w = Math.min(1, Math.min(warmth(l.a), warmth(l.b)) * 0.55 + Math.max(warmth(l.a), warmth(l.b)) * 0.55);
       if (w < 0.18) continue;
@@ -57,7 +58,7 @@ window.WAKE_DRAW = (function () {
     const radius = (n) => (n.kind === "projects" ? 5.5 + Math.min(n.deg, 18) * 0.3 : 2.5 + Math.sqrt(n.deg) * 1.05);
     for (const n of S.byHeat) {
       const w = warmth(n), lit = w > 0.3, r = radius(n);
-      ctx.globalCompositeOperation = "lighter";
+      ctx.globalCompositeOperation = add;
       if (lit) pool(ctx, S, n.px, n.py, r * 4.6 * breath(n), [[0, gold, 0.85 * w], [0.35, coral, 0.3 * w], [1, coral, 0]]);
       if (n.flare > 0.03) { ctx.strokeStyle = S.alpha(core, n.flare); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(n.px, n.py, r + (1 - n.flare) * 46, 0, 7); ctx.stroke(); }
       ctx.globalCompositeOperation = "source-over";
@@ -72,7 +73,7 @@ window.WAKE_DRAW = (function () {
     over.lineJoin = "round";
     const label = (n) => {
       const big = n.kind === "projects", r = radius(n), text = n.label.length > 34 ? n.label.slice(0, 32) + "…" : n.label, note = big && n.heat >= 0.8 && n.today >= 2 && !page.contains("today") ? `${n.today} lit today` : "";
-      over.font = big ? `400 21px ${display}` : "500 13px Geist, sans-serif"; over.textAlign = "center"; over.textBaseline = "top";
+      over.font = big ? `620 ${S.narrow ? 14 : 17}px ${display}` : `500 12.5px ${body}`; over.textAlign = "center"; over.textBaseline = "top";
       const tw = Math.max(over.measureText(text).width, note ? 78 : 0), h = (big ? 24 : 17) + (note ? 16 : 0), fit = (x) => Math.max(tw / 2 + 12, Math.min(S.w - tw / 2 - 12, x));
       // below the note if there is room, else above it, else beside it
       const spots = [[fit(n.px), n.py + r + 7], [fit(n.px), n.py - r - 7 - h], [fit(n.px + r + 10 + tw / 2), n.py - h / 2], [fit(n.px - r - 10 - tw / 2), n.py - h / 2]];
@@ -81,7 +82,7 @@ window.WAKE_DRAW = (function () {
       const [x, y] = spot;
       over.strokeStyle = S.alpha(deep, 0.7); over.lineWidth = 3; over.strokeText(text, x, y);
       over.fillStyle = big ? ink : ink2; over.fillText(text, x, y);
-      if (note) { over.font = "500 12px Geist, sans-serif"; over.lineWidth = 2.5; over.strokeText(note, x, y + 25); over.fillStyle = gold; over.fillText(note, x, y + 25); }
+      if (note) { over.font = `500 12px ${body}`; over.lineWidth = 2.5; over.strokeText(note, x, y + 22); over.fillStyle = accent; over.fillText(note, x, y + 22); }
     };
     for (const n of S.byHeat) if (n.kind === "projects") label(n);
     for (const t of S.tethers) if (t.node.px > t.x + 50) for (let i = 1; i < 14; i++) { const [x, y] = bezier(t, i / 14); S.reserve(x - 9, y - 9, 18, 18); }
@@ -97,14 +98,14 @@ window.WAKE_DRAW = (function () {
       const n = t.node, g = (t.fixed ? S.ease((S.wake - 1.5) / 0.9) : Math.max(n.lit, t.spark != null ? 1 : 0)) * t.k;
       if (g <= 0.02 || n.px < t.x + 50) continue;
       const mx = t.x + (n.px - t.x) * 0.55, path = () => { over.beginPath(); over.moveTo(t.x, t.y); over.bezierCurveTo(mx, t.y, mx, n.py, n.px - 14, n.py); };
-      over.globalCompositeOperation = "lighter";
+      over.globalCompositeOperation = add;
       for (const [width, color, a] of [[8, ember, 0.14], [3, coral, 0.34], [1.3, core, 0.9]]) { path(); over.strokeStyle = S.alpha(color, a * g * (t.fixed ? 1 : 0.75)); over.lineWidth = width; over.stroke(); }
       const u = t.spark != null ? t.spark : t.fixed && !S.still ? (S.t * 0.32) % 1 : null;
       if (u != null && u < 1) { const [bx, by] = bezier(t, u), big = t.spark != null ? 18 : 11; pool(over, S, bx, by, big, [[0, core, 0.95 * g], [0.4, gold, 0.45 * g], [1, gold, 0]]); }
       over.globalCompositeOperation = "source-over";
       if (!t.fixed) continue;
       over.strokeStyle = S.alpha(gold, g); over.lineWidth = 1.5; over.beginPath(); over.arc(n.px, n.py, 14, 0, 7); over.stroke();
-      over.font = "500 13px Geist, sans-serif"; over.textAlign = "center"; over.textBaseline = "top";
+      over.font = `500 12.5px ${body}`; over.textAlign = "center"; over.textBaseline = "top";
       over.strokeStyle = S.alpha(deep, 0.7 * g); over.lineWidth = 3; over.strokeText(n.label, n.px, n.py + 22);
       over.fillStyle = S.alpha(gold, g); over.fillText(n.label, n.px, n.py + 22);
     }

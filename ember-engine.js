@@ -105,6 +105,7 @@
     const redraw = () => { if (still || seek != null) frame(performance.now()); };
 
     addEventListener("resize", () => { size(); redraw(); });
+    addEventListener("wake-theme", redraw);
     addEventListener("scroll", redraw, { passive: true });
     // for stills, clips and the contrast check: jump to a moment after load and hold it
     window.wakeSeek = (sec) => { seek = sec; frame(0); };

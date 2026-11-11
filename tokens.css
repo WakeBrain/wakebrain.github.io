@@ -1,25 +1,92 @@
-@font-face { font-family: "Geist"; src: url("fonts/geist.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: "Geist Mono"; src: url("fonts/geist-mono.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "Instrument Serif"; src: url("fonts/instrument-serif.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Mona Sans"; src: url("fonts/mona-sans.woff2") format("woff2"); font-weight: 200 900; font-stretch: 75% 125%; font-display: swap; }
+/* the same file, held to its wide end: headings ask for normal width and get 112% */
+@font-face { font-family: "Mona Sans Display"; src: url("fonts/mona-sans.woff2") format("woff2"); font-weight: 200 900; font-stretch: 112% 125%; font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; src: url("fonts/jetbrains-mono.woff2") format("woff2"); font-weight: 100 800; font-display: swap; }
 :root {
-  color-scheme: dark;
   --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
-  --text-xs: 0.875rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.1875rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
-  --text-display-s: clamp(2.25rem, 4vw + 0.5rem, 3.75rem); --text-display: clamp(2.75rem, 5vw + 1rem, 5.25rem);
-  --text-section: clamp(2rem, 2.5vw + 1rem, 3.5rem); --text-title: clamp(1.25rem, 0.75vw + 0.875rem, 1.625rem); --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.375rem);
+  --text-xs: 0.75rem; --text-sm: 0.8125rem; --text-md: 0.9375rem; --text-lg: 1.0625rem; --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem;
+  --text-page: clamp(2rem, 2.4vw + 1rem, 2.75rem); --text-card: clamp(1.5rem, 1.2vw + 1rem, 1.875rem);
+  --text-display-s: var(--text-2xl); --text-display: var(--text-page); --text-section: var(--text-xl); --text-title: var(--text-md); --text-lead: var(--text-lg);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 560ms;
-  --container: 1440px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px; --section-gap-l: 176px; --ctl: 40px; --bar: 60px;
-  --z-light: 0; --z-thread: 1; --z-page: 2; --z-bar: 300; --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
+  --container: 1440px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px; --section-gap-l: 176px;
+  --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+  --font-display: "Mona Sans Display", "Mona Sans", ui-sans-serif, system-ui, sans-serif; --font-body: "Mona Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-outlier: "JetBrains Mono", ui-monospace, monospace; --font-mono: var(--font-outlier);
+  --radius-card: 16px; --radius-ctl: 10px; --radius-pill: 999px; --rule-hair: 1px;
+  --tracking-display: -0.022em; --display-weight: 620;
+  --color-paper-2: var(--color-surface); --color-paper-3: var(--color-surface-2);
+  --color-accent-2: var(--color-coral); --color-live: var(--color-accent); --color-error: var(--color-coral); --color-success: var(--color-done);
+}
+
+/* Themes. Each block is a full set; kept in step with the app. */
+:root, [data-theme="dusk"] {
+  color-scheme: dark;
   --color-paper: oklch(24% 0.08 305); --color-paper-hi: oklch(30% 0.095 305); --color-paper-lo: oklch(19% 0.07 305);
   --color-surface: oklch(30% 0.085 305); --color-surface-2: oklch(35% 0.09 305);
   --color-ink: oklch(97% 0.012 85); --color-ink-2: oklch(90% 0.03 305); --color-muted: oklch(81% 0.045 305);
   --color-rule: oklch(40% 0.08 305); --color-rule-2: oklch(61% 0.075 305); --color-edge: oklch(97% 0.012 85 / 0.12);
-  --color-accent: oklch(86% 0.15 85); --color-accent-hi: oklch(92% 0.1 92); --color-accent-ink: oklch(24% 0.06 60); --color-focus: oklch(86% 0.15 85);
-  --color-coral: oklch(70% 0.16 45); --color-ember: oklch(62% 0.21 25); --color-core: oklch(97% 0.03 95); --color-cool: oklch(82% 0.07 305);
+  --color-accent: oklch(86% 0.15 85); --color-accent-hi: oklch(92% 0.1 92); --color-accent-ink: oklch(24% 0.06 60); --color-accent-edge: oklch(97% 0.03 95); --color-focus: oklch(86% 0.15 85);
+  --color-coral: oklch(76% 0.15 45); --color-done: oklch(86% 0.13 165); --color-cool: oklch(82% 0.07 305);
   --surface-glass: oklch(30% 0.085 305 / 0.7); --surface-row: oklch(30% 0.085 305 / 0.66); --light-wash: oklch(70% 0.16 45 / 0.26);
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif; --font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
-  --font-outlier: "Geist Mono", ui-monospace, monospace;
-  --radius-card: 20px; --radius-ctl: 12px; --radius-pill: 999px; --rule-hair: 1px;
-  --tracking-display: -0.02em; --display-weight: 400;
+  --shadow-card: 0 28px 64px -30px oklch(12% 0.07 305 / 0.8); --shadow-pop: 0 24px 60px -20px oklch(10% 0.06 305 / 0.85);
+  --backdrop: oklch(19% 0.07 305 / 0.7); --grain: 0.16;
+  --light-core: oklch(97% 0.03 95); --light-gold: oklch(86% 0.15 85); --light-coral: oklch(70% 0.16 45); --light-ember: oklch(62% 0.21 25); --light-cool: oklch(82% 0.07 305);
+  --map-halo: oklch(19% 0.07 305); --map-add: lighter; --map-screen: screen;
+}
+[data-theme="light"] {
+  color-scheme: light;
+  --color-paper: oklch(97.5% 0.006 300); --color-paper-hi: oklch(99.5% 0.002 300); --color-paper-lo: oklch(95% 0.01 300);
+  --color-surface: oklch(100% 0 0); --color-surface-2: oklch(94% 0.014 300);
+  --color-ink: oklch(22% 0.035 300); --color-ink-2: oklch(35% 0.035 300); --color-muted: oklch(46% 0.03 300);
+  --color-rule: oklch(89% 0.014 300); --color-rule-2: oklch(64% 0.03 300); --color-edge: oklch(100% 0 0 / 0.9);
+  --color-accent: oklch(44% 0.18 300); --color-accent-hi: oklch(51% 0.19 300); --color-accent-ink: oklch(99% 0.005 300); --color-accent-edge: oklch(62% 0.16 300); --color-focus: oklch(44% 0.18 300);
+  --color-coral: oklch(50% 0.19 30); --color-done: oklch(46% 0.12 160); --color-cool: oklch(50% 0.09 295);
+  --surface-glass: oklch(100% 0 0 / 0.86); --surface-row: oklch(94% 0.014 300 / 0.8); --light-wash: oklch(85% 0.12 75 / 0.3);
+  --shadow-card: 0 1px 2px oklch(22% 0.035 300 / 0.06), 0 18px 40px -22px oklch(22% 0.035 300 / 0.25); --shadow-pop: 0 2px 6px oklch(22% 0.035 300 / 0.08), 0 28px 64px -24px oklch(22% 0.035 300 / 0.4);
+  --backdrop: oklch(22% 0.035 300 / 0.32); --grain: 0.05;
+  --light-core: oklch(58% 0.2 45); --light-gold: oklch(84% 0.14 80); --light-coral: oklch(82% 0.12 55); --light-ember: oklch(88% 0.07 45); --light-cool: oklch(62% 0.07 300);
+  --map-halo: oklch(97.5% 0.006 300); --map-add: multiply; --map-screen: multiply;
+}
+[data-theme="graphite"] {
+  color-scheme: dark;
+  --color-paper: oklch(21% 0.004 260); --color-paper-hi: oklch(25% 0.005 260); --color-paper-lo: oklch(17% 0.004 260);
+  --color-surface: oklch(26% 0.005 260); --color-surface-2: oklch(31% 0.006 260);
+  --color-ink: oklch(96% 0.003 260); --color-ink-2: oklch(87% 0.005 260); --color-muted: oklch(74% 0.008 260);
+  --color-rule: oklch(34% 0.006 260); --color-rule-2: oklch(54% 0.008 260); --color-edge: oklch(96% 0.003 260 / 0.09);
+  --color-accent: oklch(85% 0.11 80); --color-accent-hi: oklch(91% 0.08 85); --color-accent-ink: oklch(22% 0.03 70); --color-accent-edge: oklch(96% 0.03 90); --color-focus: oklch(85% 0.11 80);
+  --color-coral: oklch(75% 0.14 40); --color-done: oklch(84% 0.1 160); --color-cool: oklch(78% 0.012 260);
+  --surface-glass: oklch(26% 0.005 260 / 0.78); --surface-row: oklch(28% 0.005 260 / 0.7); --light-wash: oklch(70% 0.12 60 / 0.16);
+  --shadow-card: 0 28px 64px -30px oklch(8% 0 0 / 0.85); --shadow-pop: 0 24px 60px -20px oklch(6% 0 0 / 0.9);
+  --backdrop: oklch(12% 0.004 260 / 0.7); --grain: 0.1;
+  --light-core: oklch(97% 0.02 90); --light-gold: oklch(85% 0.12 80); --light-coral: oklch(70% 0.12 50); --light-ember: oklch(55% 0.1 40); --light-cool: oklch(72% 0.01 260);
+  --map-halo: oklch(17% 0.004 260); --map-add: lighter; --map-screen: screen;
+}
+[data-theme="paper"] {
+  color-scheme: light;
+  --color-paper: oklch(95.5% 0.018 85); --color-paper-hi: oklch(97.5% 0.014 88); --color-paper-lo: oklch(92.5% 0.022 82);
+  --color-surface: oklch(98.5% 0.01 88); --color-surface-2: oklch(90.5% 0.026 82);
+  --color-ink: oklch(24% 0.03 60); --color-ink-2: oklch(35% 0.03 60); --color-muted: oklch(44% 0.03 65);
+  --color-rule: oklch(86% 0.028 82); --color-rule-2: oklch(62% 0.04 78); --color-edge: oklch(100% 0 0 / 0.7);
+  --color-accent: oklch(40% 0.13 262); --color-accent-hi: oklch(47% 0.14 262); --color-accent-ink: oklch(98% 0.01 88); --color-accent-edge: oklch(58% 0.13 262); --color-focus: oklch(40% 0.13 262);
+  --color-coral: oklch(48% 0.17 30); --color-done: oklch(43% 0.1 155); --color-cool: oklch(48% 0.07 262);
+  --surface-glass: oklch(98.5% 0.01 88 / 0.88); --surface-row: oklch(90.5% 0.026 82 / 0.75); --light-wash: oklch(82% 0.12 75 / 0.35);
+  --shadow-card: 0 1px 2px oklch(24% 0.03 60 / 0.07), 0 18px 40px -22px oklch(24% 0.03 60 / 0.28); --shadow-pop: 0 2px 6px oklch(24% 0.03 60 / 0.1), 0 28px 64px -24px oklch(24% 0.03 60 / 0.42);
+  --backdrop: oklch(24% 0.03 60 / 0.34); --grain: 0.1;
+  --light-core: oklch(50% 0.16 262); --light-gold: oklch(78% 0.15 78); --light-coral: oklch(76% 0.13 60); --light-ember: oklch(86% 0.09 70); --light-cool: oklch(60% 0.05 262);
+  --map-halo: oklch(95.5% 0.018 85); --map-add: multiply; --map-screen: multiply;
+}
+[data-theme="tide"] {
+  color-scheme: dark;
+  --color-paper: oklch(25% 0.045 225); --color-paper-hi: oklch(31% 0.055 220); --color-paper-lo: oklch(20% 0.04 230);
+  --color-surface: oklch(31% 0.05 225); --color-surface-2: oklch(36% 0.055 225);
+  --color-ink: oklch(97% 0.012 200); --color-ink-2: oklch(90% 0.028 212); --color-muted: oklch(81% 0.04 218);
+  --color-rule: oklch(41% 0.05 225); --color-rule-2: oklch(61% 0.05 222); --color-edge: oklch(97% 0.012 200 / 0.12);
+  --color-accent: oklch(85% 0.12 60); --color-accent-hi: oklch(91% 0.09 70); --color-accent-ink: oklch(25% 0.05 45); --color-accent-edge: oklch(97% 0.03 80); --color-focus: oklch(85% 0.12 60);
+  --color-coral: oklch(78% 0.13 10); --color-done: oklch(87% 0.12 170); --color-cool: oklch(84% 0.07 200);
+  --surface-glass: oklch(31% 0.05 225 / 0.72); --surface-row: oklch(31% 0.05 225 / 0.66); --light-wash: oklch(72% 0.13 50 / 0.24);
+  --shadow-card: 0 28px 64px -30px oklch(12% 0.04 230 / 0.8); --shadow-pop: 0 24px 60px -20px oklch(10% 0.04 230 / 0.85);
+  --backdrop: oklch(18% 0.04 230 / 0.7); --grain: 0.14;
+  --light-core: oklch(97% 0.03 80); --light-gold: oklch(86% 0.12 65); --light-coral: oklch(72% 0.15 35); --light-ember: oklch(58% 0.14 215); --light-cool: oklch(84% 0.07 200);
+  --map-halo: oklch(20% 0.04 230); --map-add: lighter; --map-screen: screen;
 }

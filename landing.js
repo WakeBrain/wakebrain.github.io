@@ -28,3 +28,27 @@ if (demo) {
     seen.observe(demo);
   } else play();
 }
+
+// themes: the swatches restyle this page and swap every app shot for the same screen in that theme
+const shots = () => document.querySelectorAll("img[data-shot]"), theme = () => document.documentElement.dataset.theme;
+const reshoot = () => shots().forEach(i => { i.src = `img/app/${theme()}/${i.dataset.shot}.webp`; });
+document.querySelectorAll("[data-set-theme]").forEach(b => b.addEventListener("click", () => {
+  document.documentElement.dataset.theme = b.dataset.setTheme;
+  document.querySelectorAll("[data-set-theme]").forEach(x => x.setAttribute("aria-checked", x === b));
+  reshoot(); dispatchEvent(new Event("wake-theme"));
+}));
+
+// the tour: a tab picks the screen; arrow keys move between tabs
+const tabs = [...document.querySelectorAll(".tour-list [role=tab]")], tourImg = document.getElementById("tour-img"), cap = document.createElement("figcaption");
+document.getElementById("tour-shot").append(cap);
+const pickTab = (t, focus) => {
+  tabs.forEach(x => { x.setAttribute("aria-selected", x === t); x.tabIndex = x === t ? 0 : -1; });
+  tourImg.dataset.shot = t.dataset.shot; tourImg.alt = t.dataset.alt; tourImg.src = `img/app/${theme()}/${t.dataset.shot}.webp`;
+  cap.textContent = t.querySelector("span").textContent;
+  if (focus) t.focus();
+};
+tabs.forEach((t, i) => {
+  t.addEventListener("click", () => pickTab(t));
+  t.addEventListener("keydown", e => { const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]; if (d) { e.preventDefault(); pickTab(tabs[(i + d + tabs.length) % tabs.length], true); } });
+});
+if (tabs.length) cap.textContent = tabs[0].querySelector("span").textContent;
