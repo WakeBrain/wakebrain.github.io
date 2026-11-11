@@ -26,7 +26,7 @@
     <a href="#app">the app</a>
     <a href="#pricing">pricing</a>
   </nav>
-  <a class="btn primary small" href="#waitlist">join the waitlist</a>
+  <a class="btn primary small" href="https://buy.polar.sh/polar_cl_RY5sufCcn7mrCrFExtuwMNFq7HFmd3nYXogRp3LDhf8" data-buy>buy, $59</a>
 </header>
 
 <main id="main">
@@ -35,7 +35,7 @@
     <div class="hero-text" data-quiet>
       <h1 id="hero-h">nothing you promise slips through</h1>
       <p class="hero-lede">Promise it in one repo, finish it in another, see the proof.</p>
-      <div class="acts"><a class="btn primary" href="#waitlist">join the waitlist</a><a class="btn" href="#pricing">pre-order, $59</a></div>
+      <div class="acts"><a class="btn primary" href="https://buy.polar.sh/polar_cl_RY5sufCcn7mrCrFExtuwMNFq7HFmd3nYXogRp3LDhf8" data-buy>buy, $59</a><a class="btn" href="#pricing">pricing</a></div>
       <p class="hero-note">$59 once. One vault of plain Markdown on your Mac. Works with Claude Code, Codex, or both.</p>
     </div>
   </section>
@@ -144,7 +144,7 @@
         <tr><th scope="row">a mac</th><td>macOS with Python 3.9 or newer.</td></tr>
         <tr><th scope="row">claude code or codex</th><td>Notes are written through your own Claude Code sign-in, or through Codex. No API key. Both agents read the same to-dos and decisions.</td></tr>
         <tr><th scope="row">connectors</th><td>Optional, and off until you turn them on: Granola, Wispr, Google Calendar, Slack, Jira.</td></tr>
-        <tr><th scope="row">first open</th><td>Wake will be a direct download. The first time, macOS says it cannot check it: press Done, open System Settings, Privacy and Security, and press Open Anyway. On macOS 14 and earlier, right-click Wake and choose Open.</td></tr>
+        <tr><th scope="row">first open</th><td>Wake is a direct download. The first time, macOS says it cannot check it: press Done, open System Settings, Privacy and Security, and press Open Anyway. On macOS 14 and earlier, right-click Wake and choose Open.</td></tr>
       </tbody>
     </table>
   </section>
@@ -162,8 +162,8 @@
           <li>Agents tick off to-dos when they finish them, with proof</li>
           <li>Ask your brain, and web research</li>
         </ul>
-        <a class="btn primary" href="#waitlist" data-plan="pro">pre-order, pay nothing now</a>
-        <p class="fine">Pay when it ships. One email with the checkout link.</p>
+        <a class="btn primary" href="https://buy.polar.sh/polar_cl_RY5sufCcn7mrCrFExtuwMNFq7HFmd3nYXogRp3LDhf8" data-buy>buy, $59</a>
+        <p class="fine">Pay once, download right away. Your licence key comes by email.</p>
       </div>
       <div class="plan">
         <h3>wake + sync <span class="coming">coming</span></h3>
@@ -195,17 +195,16 @@
 
   <section class="install" id="waitlist" aria-labelledby="wait-h">
     <div>
-      <h2 id="wait-h">be first in</h2>
-      <p>Pre-orders pay nothing now. At launch you get a checkout link: pay once, then download.</p>
-      <p class="thanks" id="w-thanks" hidden><strong>You’re on the list.</strong> One email at launch, nothing else.</p>
+      <h2 id="wait-h">sync and super brain</h2>
+      <p>Not out yet. Leave your email and you get one email when they are.</p>
+      <p class="thanks" id="w-thanks" hidden><strong>You’re on the list.</strong> One email when it ships, nothing else.</p>
       <form class="wait" id="w-form">
         <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
         <label for="w-email">email</label>
         <input id="w-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
         <fieldset>
           <legend>which plan</legend>
-          <label><input type="radio" name="plan" value="pro" checked> Wake, $59 once</label>
-          <label><input type="radio" name="plan" value="sync"> Wake + sync, $59 and about $5 a month</label>
+          <label><input type="radio" name="plan" value="sync" checked> Wake + sync, $59 and about $5 a month</label>
           <label><input type="radio" name="plan" value="super"> Super Brain: phone and sharing, $5 a month</label>
           <label><input type="radio" name="plan" value="less"> I want it, but not at $59</label>
         </fieldset>
@@ -214,7 +213,7 @@
           <option>Claude Code</option><option>Claude Code and Codex</option><option>Codex only</option><option>something else</option>
         </select>
         <input type="hidden" name="ref" id="w-ref" value="direct">
-        <button class="btn primary" type="submit">pre-order, pay nothing now</button>
+        <button class="btn primary" type="submit">join the waitlist</button>
       </form>
       <details>
         <summary>Does my code leave my machine?</summary>
@@ -244,7 +243,7 @@ let ref = new URLSearchParams(location.search).get("ref");
 try { if (!ref && document.referrer) ref = fromHost(new URL(document.referrer).hostname) || "other"; } catch (e) {}
 if (ref) document.getElementById("w-ref").value = ref.slice(0, 32);
 const tagOf = r => (r || "direct").replace(/[^a-z0-9-]/gi, "").slice(0, 24) || "direct";
-const hit = k => fetch("https://abacus.jasoncameron.dev/hit/wakebrain/" + k).catch(() => {});
+const hit = k => fetch("https://abacus.jasoncameron.dev/hit/wakebrain/" + k, { keepalive: true }).catch(() => {});
 document.getElementById("w-form").addEventListener("submit", async e => {
   e.preventDefault();
   const f = e.target, d = Object.fromEntries(new FormData(f));
@@ -262,6 +261,7 @@ try {
     hit("visits").then(() => hit("visits-" + tagOf(ref)));
   }
 } catch (e) {}
+document.querySelectorAll("[data-buy]").forEach(a => a.addEventListener("click", () => hit("buy-" + tagOf(ref))));
 document.querySelectorAll("[data-plan]").forEach(a => a.addEventListener("click", () => { document.querySelector(`input[name=plan][value=${a.dataset.plan}]`).checked = true; }));
 </script>
 <script>matchMedia("(prefers-reduced-motion: reduce)").matches&&document.getElementById("film").pause()</script>
