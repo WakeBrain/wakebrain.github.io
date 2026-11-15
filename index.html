@@ -6,8 +6,22 @@
 <meta name="theme-color" content="#2a1840">
 <meta name="description" content="Wake writes down what you promise in each Claude Code or Codex session, then shows where it got done, even in another repo. Plain Markdown on your Mac.">
 <title>Wake: nothing you promise slips through</title>
+<link rel="canonical" href="https://wakebrain.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Wake">
+<meta property="og:url" content="https://wakebrain.github.io/">
+<meta property="og:title" content="Wake: nothing you promise slips through">
+<meta property="og:description" content="Wake writes down what you promise in each Claude Code or Codex session, then shows where it got done, even in another repo. Plain Markdown on your Mac.">
+<meta property="og:image" content="https://wakebrain.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Wake: nothing you promise slips through, with the Today screen of the app">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wake: nothing you promise slips through">
+<meta name="twitter:description" content="Wake writes down what you promise in each Claude Code or Codex session, then shows where it got done, even in another repo. Plain Markdown on your Mac.">
+<meta name="twitter:image" content="https://wakebrain.github.io/og.png">
 <link rel="preload" href="fonts/mona-sans.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="landing.css?v=4">
+<link rel="stylesheet" href="landing.css?v=5">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 </head>
 <body class="landing">
@@ -39,7 +53,7 @@
       <p class="hero-note">$59 once. One vault of plain Markdown on your Mac. Works with Claude Code, Codex, or both.</p>
     </div>
     <figure class="stage" data-quiet>
-      <img id="stage-img" data-shot="today" src="img/app/dusk/today.webp" width="2160" height="1350" alt="Wake's Today screen: the next to-do, what is coming up and what is with your agents, beside the map of your notes">
+      <img fetchpriority="high" id="stage-img" data-shot="today" src="img/app/dusk/today.webp" width="2160" height="1350" alt="Wake's Today screen: the next to-do, what is coming up and what is with your agents, beside the map of your notes">
       <figcaption>
         <span id="themes-label">Wake comes in five themes. Try one on this page.</span>
         <span class="themes" role="radiogroup" aria-labelledby="themes-label">
@@ -65,7 +79,7 @@
       <button type="button" class="replay" id="replay" hidden>Play it again</button>
     </div>
     <figure class="proof">
-      <img data-shot="receipt" src="img/app/dusk/receipt.webp" width="1176" height="416" loading="lazy" alt="In the app: two to-dos your agents finished, one promised in lakeside-portal on 8 Nov and done in tidepool on 11 Nov, with the session that did it">
+      <img data-shot="receipt" src="img/app/dusk/receipt.webp" width="1176" height="416" loading="lazy" decoding="async" alt="In the app: two to-dos your agents finished, one promised in lakeside-portal on 8 Nov and done in tidepool on 11 Nov, with the session that did it">
       <figcaption>The same thing in the app. A to-do promised in one project, done in another, with the session that did it.</figcaption>
     </figure>
   </section>
@@ -82,7 +96,7 @@
         <button type="button" role="tab" aria-selected="false" aria-controls="tour-shot" data-shot="decisions" data-alt="Decisions: a searchable log of what was decided and where" tabindex="-1"><b>Decisions</b><span>What was decided, where, and why.</span></button>
       </div>
       <figure class="tour-shot" id="tour-shot" role="tabpanel">
-        <img id="tour-img" data-shot="today" src="img/app/dusk/today.webp" width="2160" height="1350" loading="lazy" alt="Today: a finished to-do with its receipt, the next to-do, then every open to-do, beside the map">
+        <img id="tour-img" data-shot="today" src="img/app/dusk/today.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Today: a finished to-do with its receipt, the next to-do, then every open to-do, beside the map">
       </figure>
     </div>
   </section>
@@ -106,7 +120,7 @@
         <p>Pick a client and a week. Wake writes what was done, as a note you can copy into an email. Leave anything out first.</p>
         <p class="cap">One client, one week, as a note. Tick off what stays private, then copy.</p>
       </div>
-      <img data-shot="worklog" src="img/app/dusk/worklog.webp" width="2160" height="1350" alt="Work log: one client, one week, the sessions and decisions as a note, with ticks to leave entries out" loading="lazy">
+      <img data-shot="worklog" src="img/app/dusk/worklog.webp" width="2160" height="1350" alt="Work log: one client, one week, the sessions and decisions as a note, with ticks to leave entries out" loading="lazy" decoding="async">
     </div>
     <div class="split">
       <div class="split-text">
@@ -114,7 +128,7 @@
         <p>Settings lists every path out, read from your real setup, with the exact prompt. Put a client on the never-send list and its new sessions stay on your Mac; its light goes out on the map.</p>
         <p class="cap">The full list, the exact prompt, and a never-send list per project. It covers new sessions; older notes stay in the vault.</p>
       </div>
-      <img data-shot="privacy" src="img/app/dusk/privacy.webp" width="2160" height="1350" alt="Settings: two things leave this Mac on their own, the list of paths out, and a never-send project ringed on the map" loading="lazy">
+      <img data-shot="privacy" src="img/app/dusk/privacy.webp" width="2160" height="1350" alt="Settings: two things leave this Mac on their own, the list of paths out, and a never-send project ringed on the map" loading="lazy" decoding="async">
     </div>
   </section>
 
@@ -193,7 +207,7 @@
   meetings/    from Granola or Wispr
   boards/      canvases, Obsidian format
   briefs/      morning pages</pre>
-      <img data-pane="shot" data-shot="library" hidden src="img/app/dusk/library.webp" width="2160" height="1350" alt="The same notes in the Wake library" loading="lazy">
+      <img data-pane="shot" data-shot="library" hidden src="img/app/dusk/library.webp" width="2160" height="1350" alt="The same notes in the Wake library" loading="lazy" decoding="async">
     </div>
   </section>
 

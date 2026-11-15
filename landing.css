@@ -18,7 +18,7 @@ main > section + section { margin-top: var(--section); }
 .glow, .sharp, .grain, .thread { position: absolute; top: 0; left: 0; width: 100%; height: 100dvh; max-height: 900px; pointer-events: none; }
 .glow, .sharp, .grain { z-index: var(--z-light); }
 .thread { z-index: var(--z-thread); }
-.grain { height: 1400px; max-height: none; opacity: var(--grain); mix-blend-mode: overlay; background: url("grain.png") 0 0 / 160px 160px; mask-image: linear-gradient(#000 60%, transparent); }
+.grain { height: 1400px; max-height: none; opacity: var(--grain); mix-blend-mode: overlay; background: url("grain.webp") 0 0 / 160px 160px; mask-image: linear-gradient(#000 60%, transparent); }
 .mapbox { position: absolute; pointer-events: none; top: calc(var(--bar) + var(--space-md)); right: 0; left: 52%; height: 560px; }
 
 .skip { position: absolute; left: var(--space-md); top: calc(-1 * var(--space-4xl)); z-index: var(--z-toast); padding: var(--space-xs) var(--space-md); background: var(--color-ink); color: var(--color-paper); border-radius: var(--radius-pill); }
@@ -29,6 +29,7 @@ main > section + section { margin-top: var(--section); }
 .mark .m-line { stroke: var(--color-rule-2); stroke-width: 1.4; fill: none; }
 .mark .m-hot { fill: var(--color-accent); } .mark .m-halo { fill: var(--color-accent); opacity: 0.28; } .mark .m-cold { fill: var(--color-cool); }
 .nav nav { display: flex; gap: var(--space-2xs); margin-left: auto; }
+.nav .mark { min-height: 40px; }
 .nav nav a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 var(--space-sm); border-radius: var(--radius-pill); color: var(--color-ink-2); text-decoration: none; font-size: var(--text-sm); font-weight: 500; transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out); }
 .nav nav a:hover { background: var(--color-surface-2); color: var(--color-ink); }
 
@@ -251,9 +252,14 @@ details p { max-width: none; padding-bottom: var(--space-md); font-size: 0.9375r
 }
 @media (max-width: 640px) {
   :root { --gutter: 20px; --text-md: 1rem; }
-  .nav nav { display: none; }
-  .nav { padding-left: var(--space-md); }
+  html { scroll-padding-top: calc(2 * var(--bar) + 24px); }
+  .nav { height: auto; min-height: var(--bar); flex-wrap: wrap; gap: 0 var(--space-lg); padding: 0 var(--space-xs) 0 var(--space-md); }
   .nav > .btn { margin-left: auto; }
+  .nav .mark { min-height: var(--bar); }
+  .nav nav { order: 3; flex: 1 0 100%; margin: 0 calc(-1 * var(--space-xs)) 0 calc(-1 * var(--space-md)); padding: 0 var(--space-xs); border-top: 1px solid var(--color-rule); justify-content: space-between; }
+  .nav nav a { flex: 1; justify-content: center; min-height: 44px; padding: 0 var(--space-xs); }
+  .themes button, .switch button, .wait .chips span, .tour-list button, .tour-list button:last-child { min-height: 44px; }
+  .foot a { display: inline-flex; align-items: center; min-height: 44px; }
   .mapbox, .glow, .sharp, .thread { display: none; }
   .hero { padding-top: 56px; }
   .hero .btn { flex: 1 1 100%; }
