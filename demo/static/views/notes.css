@@ -1,0 +1,19 @@
+/* feature: library (notes.js) */
+.notes-page { display: flex; flex-direction: column; gap: var(--space-lg); min-width: 0; }
+.notes-page .notes-kind { display: flex; align-items: center; gap: var(--space-xs); font-size: var(--text-sm); color: var(--color-muted); }
+.notes-page .notes-dot { width: 9px; height: 9px; flex: none; border-radius: 50%; }
+.notes-page .notes-tabs { display: flex; flex-wrap: wrap; gap: var(--space-2xs); padding: var(--space-2xs); border: 1px solid var(--color-rule); border-radius: var(--radius-pill); }
+.notes-page .notes-tabs .btn { flex: 1; border: 0; }
+.notes-page .notes-tabs .btn[aria-pressed="true"] { background: var(--color-surface-2); color: var(--color-ink); }
+.notes-page .notes-folders { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+.notes-page .notes-folders .btn { min-height: 32px; padding: var(--space-2xs) var(--space-sm); border: 1px solid var(--color-rule); border-radius: var(--radius-pill); background: var(--color-surface); color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 400; }
+.notes-page .notes-folders .btn:hover { border-color: var(--color-accent); }
+.notes-page .notes-folders .btn[aria-pressed="true"] { background: var(--color-surface-2); color: var(--color-ink); border-color: var(--color-rule-2); }
+.notes-page .notes-mentions { list-style: none; margin: 0; padding: 0; }
+.notes-page .notes-mention { margin-inline: calc(-1 * var(--space-md)); padding: var(--space-sm) var(--space-md); border-bottom: 1px solid var(--color-rule); border-radius: var(--radius-ctl); transition: background-color var(--dur-micro) var(--ease-out); }
+.notes-page .notes-mention:hover, .notes-page .notes-mention:focus-within { background: var(--surface-row); }
+.notes-page .notes-title { position: relative; border: 0; padding: 0; background: none; color: var(--color-ink); font: 500 var(--text-md) var(--font-body); text-align: left; text-decoration: underline; text-decoration-color: var(--color-rule-2); text-underline-offset: 4px; }
+.notes-page .notes-title:hover { text-decoration-color: var(--color-accent); }
+.notes-page .notes-snippet { color: var(--color-ink-2); overflow-wrap: anywhere; margin-top: var(--space-2xs); }
+.notes-page .notes-readonly { grid-template-columns: minmax(0, 1fr); }
+.notes-page .notes-empty { margin: var(--space-xs) 0; }

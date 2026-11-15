@@ -1,0 +1,40 @@
+/* feature: boards (boards.js) */
+.bd-editor { display: none; background: var(--color-paper) radial-gradient(120% 90% at 72% 38%, var(--color-paper-hi) 0, var(--color-paper) 52%, var(--color-paper-lo) 100%); border: 1px solid var(--color-rule); box-shadow: inset 0 1px 0 var(--color-edge); color: var(--color-ink); }
+body[data-view="boards"] .bd-editor:not([hidden]) { display: block; position: fixed; inset: calc(var(--bar) + var(--space-sm)) var(--space-sm) var(--space-sm); z-index: var(--z-sticky); border-radius: var(--radius-card); overflow: hidden; }
+.bd-stage { position: absolute; inset: 0; overflow: hidden; touch-action: none; cursor: grab; }
+.bd-layer { position: absolute; transform-origin: 0 0; }
+.bd-toolbar { position: absolute; top: var(--space-sm); left: var(--space-sm); right: var(--space-sm); z-index: 3; display: flex; align-items: center; flex-wrap: nowrap; gap: var(--space-2xs);
+  padding: var(--space-2xs); border: 1px solid var(--color-rule); border-radius: var(--radius-pill); background: var(--surface-glass); box-shadow: inset 0 1px 0 var(--color-edge); }
+.bd-toolbar .btn { flex-shrink: 0; height: 32px; padding: 0 var(--space-sm); font-size: var(--text-sm); border-color: transparent; }
+.bd-toolbar .btn:hover { border-color: var(--color-rule-2); }
+.bd-name { flex: 1 1 120px; min-width: 0; padding-left: var(--space-sm); font: 600 var(--text-md) var(--sans); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bd-status { flex-shrink: 0; font-size: var(--text-sm); font-variant-numeric: tabular-nums; color: var(--color-muted); white-space: nowrap; }
+.bd-more { position: relative; flex-shrink: 0; }
+.bd-more summary { display: flex; align-items: center; list-style: none; cursor: pointer; }
+.bd-more summary::-webkit-details-marker { display: none; }
+.bd-more-panel { position: absolute; top: calc(100% + 8px); right: 0; display: grid; gap: var(--space-xs); width: 180px; padding: var(--space-sm); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper-hi); color: var(--color-ink); }
+.bd-card { position: absolute; border: 1px solid var(--color-rule-2); border-radius: var(--radius-card); background: var(--surface-glass); box-shadow: inset 0 1px 0 var(--color-edge); color: var(--color-ink); overflow: visible; cursor: move; }
+.bd-card.bd-selected { border-color: var(--color-accent); }
+.bd-card.bd-group { background: transparent; border-style: dashed; }
+.bd-title { height: 32px; padding: var(--space-xs) var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; border-bottom: 1px solid var(--color-rule); }
+.bd-content { height: calc(100% - 32px); overflow: auto; padding: var(--space-xs) var(--space-sm) var(--space-md); border-radius: 0 0 var(--radius-card) var(--radius-card); }
+.bd-text .bd-content { height: 100%; border-radius: var(--radius-card); }
+.bd-card .prose { font-size: var(--text-sm); line-height: 1.5; user-select: text; }
+.bd-card .prose > p:first-child { font: inherit; }
+.bd-card .prose h1, .bd-card .prose h2, .bd-card .prose h3 { font-size: var(--text-lg); margin: .2em 0; }
+.bd-content a { overflow-wrap: anywhere; }
+.bd-content textarea { width: 100%; height: 100%; resize: none; border: 0; background: none; color: var(--color-ink); font: var(--text-sm)/1.5 var(--sans); }
+.bd-content textarea:focus-visible { outline: none; }
+.bd-port { position: absolute; right: -8px; top: calc(50% - 8px); width: 16px; height: 16px; border-radius: var(--radius-pill); background: var(--color-accent); border: 2px solid var(--color-paper-lo); cursor: crosshair; }
+.bd-resize { position: absolute; right: 0; bottom: 0; width: 20px; height: 20px; border: 0; border-right: 2px solid var(--color-muted); border-bottom: 2px solid var(--color-muted); border-radius: 0 0 var(--radius-card) 0; background: none; cursor: nwse-resize; }
+.bd-edges { position: absolute; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
+.bd-edge { fill: none; stroke: var(--color-muted); stroke-width: 1.5; }
+.bd-edge.bd-selected { stroke: var(--color-accent); }
+.bd-edge-hit { fill: none; stroke: var(--color-paper); stroke-opacity: 0; stroke-width: 16; pointer-events: stroke; cursor: pointer; }
+.bd-arrow { fill: var(--color-muted); }
+.bd-edge-label { fill: var(--color-ink); font-size: var(--text-sm); font-family: var(--sans); paint-order: stroke; stroke: var(--color-paper-lo); stroke-width: 5; }
+.bd-help { position: absolute; bottom: var(--space-sm); left: var(--space-md); pointer-events: none; font-size: var(--text-sm); color: var(--color-muted); }
+.bd-picker { position: absolute; z-index: 5; top: 72px; left: var(--space-md); width: min(460px, calc(100% - 32px)); max-height: 70%; overflow: auto; padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--surface-glass); box-shadow: inset 0 1px 0 var(--color-edge); }
+.bd-picker input { width: 100%; margin: var(--space-xs) 0; }
+.bd-picker .rows button { width: 100%; text-align: left; }
+.bd-colour { min-height: var(--ctl); padding: 0 var(--space-xs); font-size: var(--text-sm); color: var(--color-ink); background: var(--color-paper); border: 1px solid var(--color-rule-2); border-radius: var(--radius-ctl); }

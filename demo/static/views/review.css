@@ -1,0 +1,23 @@
+/* feature: morning brief and review (brief.js, review.js) */
+.bf-card, .rv-card { margin-top: 0; }
+.bf-preview { font-size: var(--text-sm); line-height: 1.7; }
+.bf-preview:not(.bf-open) > :nth-child(n+5) { display: none; }
+.bf-preview h1, .bf-preview h2 { max-width: none; margin: 0 0 var(--space-xs); font-size: var(--text-xl); line-height: 1.2; }
+.bf-toggle { margin-top: var(--space-sm); }
+.rv-card p { color: var(--color-ink-2); }
+.rv-card .acts, .rv-reset .acts { margin-top: var(--space-md); }
+.rv-reset { display: flex; flex-direction: column; gap: var(--space-lg); }
+.rv-reset progress { width: 100%; height: 2px; border: 0; border-radius: 2px; appearance: none; background: var(--color-rule); }
+.rv-reset progress::-webkit-progress-bar { background: var(--color-rule); }
+.rv-reset progress::-webkit-progress-value { background: var(--amber); }
+.rv-reset progress::-moz-progress-bar { background: var(--amber); }
+.rv-reset .closer { margin: 0; }
+.rv-reset .closer input { min-width: 0; }
+.rv-chip { display: inline-block; border: 1px solid var(--line-2); border-radius: var(--radius-pill); padding: var(--space-3xs) var(--space-sm); color: var(--color-ink-2); font-size: var(--text-sm); margin: var(--space-sm) 0; }
+.rv-reset > .lm { padding-top: var(--space-md); }
+.rv-reset > .acts { margin-top: 0; padding-top: var(--space-md); border-top: 1px solid var(--color-rule); }
+.rv-wins { list-style: none; margin: 0; padding: 0; color: var(--ink); }
+.rv-wins li { position: relative; padding: var(--space-sm) 0 var(--space-sm) var(--space-md); }
+.rv-wins li + li { border-top: 1px solid var(--color-rule); }
+.rv-wins li::before { content: ""; position: absolute; left: 0; top: 1.1em; width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--done); }
+

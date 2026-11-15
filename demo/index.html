@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="en" data-pref="dusk">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; img-src 'self' data:; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<script src="demo/data.js"></script>
+<script src="demo/shim.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wake demo</title>
+<meta name="description" content="Wake: your ideas, projects, meetings and agent sessions in one local Markdown vault.">
+<meta name="theme-color" content="#2a1840">
+<script>
+(() => {
+  const r = document.documentElement, m = matchMedia("(prefers-color-scheme: light)");
+  const BAR = { dusk: "#2a1840", light: "#f6f5fa", graphite: "#18191b", paper: "#f4eee1", tide: "#0b2733" }, meta = document.querySelector('meta[name="theme-color"]');
+  const set = () => { const p = r.dataset.pref || "dusk"; r.dataset.theme = p === "system" ? (m.matches ? "light" : "dusk") : p; meta.content = BAR[r.dataset.theme]; };
+  set();
+  m.addEventListener("change", () => { set(); dispatchEvent(new Event("wake-theme")); });
+  window.wakeTheme = t => { r.dataset.pref = t; set(); dispatchEvent(new Event("wake-theme")); };
+})();
+</script>
+<link rel="icon" href="static/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="static/icon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Wake">
+<script src="static/vendor/marked.min.js"></script>
+<script src="static/vendor/purify.min.js"></script>
+<script src="static/vendor/d3.min.js"></script>
+<link rel="stylesheet" href="static/app.css">
+<link rel="stylesheet" href="static/views/inbox.css">
+<link rel="stylesheet" href="static/views/review.css">
+<link rel="stylesheet" href="static/views/notes.css">
+<link rel="stylesheet" href="static/views/boards.css">
+<link rel="stylesheet" href="static/views/ledger.css">
+<link rel="stylesheet" href="static/views/privacy.css">
+<script src="static/engine.js"></script>
+<script src="static/map.js"></script>
+</head>
+<body>
+<canvas class="glow" aria-hidden="true"></canvas>
+<canvas class="sharp" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<canvas class="thread" id="sky" aria-hidden="true"></canvas>
+
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path class="m-base" d="M5 19h14"/><path class="m-line" d="M12 7 5 19M12 7l7 12"/><circle class="m-halo" cx="12" cy="7" r="6.5"/><circle class="m-hot" cx="12" cy="7" r="4"/><circle class="m-cold" cx="5" cy="19" r="2.4"/><circle class="m-cold" cx="19" cy="19" r="2.4"/></svg>
+    <span>Wake</span>
+  </div>
+  <nav aria-label="Views">
+    <button data-view="today">Today <span class="n" id="c-today"></span></button>
+    <button data-view="inbox">Inbox <span class="n" id="c-inbox"></span></button>
+    <button data-view="projects">Projects <span class="n" id="c-projects"></span></button>
+    <button data-view="library">Library <span class="n" id="c-library"></span></button>
+    <button data-view="map">Map <span class="n" id="c-map"></span></button>
+    <button data-view="boards">Boards <span class="n" id="c-boards"></span></button>
+    <button data-view="decisions">Decisions <span class="n" id="c-decisions"></span></button>
+    <button data-view="worklog">Work log</button>
+    <button data-view="settings">Settings</button>
+  </nav>
+  <button class="askpill" id="askpill" type="button" aria-label="Ask your Brain or the web">
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m11 11 3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <span class="lbl">Ask your Brain</span><kbd>⌘K</kbd>
+  </button>
+</header>
+
+<div class="mapbox" data-fade="left" aria-hidden="true"></div>
+<main class="desk"><div id="view" data-quiet></div></main>
+
+<div class="maptools" data-quiet>
+  <input id="find" type="search" placeholder="Find a note" aria-label="Find a note, person or ticket on the map" autocomplete="off">
+  <div class="legend" id="legend"></div>
+</div>
+<div class="mapstats" id="mapstats"></div>
+<aside class="panel" id="panel" data-quiet hidden></aside>
+
+<dialog id="pal" aria-label="Ask">
+  <form id="form">
+    <div class="pal-in">
+      <svg width="20" height="20" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m11 11 3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input id="q" autocomplete="off" aria-label="Question">
+      <kbd>Enter</kbd>
+    </div>
+    <div class="pal-body">
+      <div class="where" role="group" aria-label="Where to look">Look in
+        <button type="button" id="m-ask" aria-pressed="true">Your Brain</button>
+        <button type="button" id="m-res" aria-pressed="false">The web</button>
+      </div>
+      <p class="hint" id="hint"></p>
+      <div class="recent" id="recent"></div>
+    </div>
+  </form>
+</dialog>
+
+<script>
+// the phone view: read-only, three views, served at /phone only when WAKE_PHONE=1
+const PHONE = location.pathname === "/phone", PHONE_VIEWS = ["today", "decisions", "worklog"];
+const H = { "X-Brain-UI": "1", "Content-Type": "application/json", ...(PHONE && { "X-Brain-View": "phone" }) };
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const MODES = {
+  ask: { ph: "Ask your Brain anything", hint: "Reads the notes that match your question, up to 40,000 characters." },
+  research: { ph: "What should I look up on the web?", hint: "Searches and reads sources, then saves a report. Takes 1–3 minutes." },
+};
+// Feature scripts in /static register views here: registerView(id, { render, count, nav }).
+const EXT = { views: {}, today: [] };
+const registerView = (id, spec) => { EXT.views[id] = spec; };
+const BUILTIN = { today: () => renderToday(), map: () => renderMapUI(), projects: () => renderProjects(), research: () => renderResearch(), asks: () => renderAsks() };
+const NAV_OF = { research: "library", asks: "library" };
+const viewOk = v => (v in BUILTIN || v in EXT.views) && (!PHONE || PHONE_VIEWS.includes(v));
+let view = "today", tab = "today";
+let mode = "ask", brain = null, reports = [], asks = [], busy = false, feedAll = false, agentsAll = false;
+try { asks = JSON.parse(localStorage.getItem("asks") || "[]"); } catch {}
+
+const api = (path, opt = {}) => (window.apiFetch || fetch)(path, { headers: H, ...opt }).then(async r => {
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok && !j.md) throw new Error(j.error || j.info || `Request failed (${r.status})`);
+  return j;
+});
+
+const localDay = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const fmtDay = s => new Date(s + "T00:00:00").toLocaleDateString([], { day: "numeric", month: "short" });
+const daysBetween = (a, b) => Math.round((new Date(b + "T00:00:00") - new Date(a + "T00:00:00")) / 864e5);
+const plain = t => (t || "").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/[*_`]/g, "");
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+
+function inline(t) {
+  const s = el("span");
+  s.innerHTML = DOMPurify.sanitize(marked.parseInline(t || ""), { FORBID_TAGS: ["img", "style", "form", "input"] });
+  s.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener noreferrer"; });
+  return s;
+}
+
+function md(text) {
+  const box = el("div", "prose");
+  box.innerHTML = DOMPurify.sanitize(marked.parse(text || ""), { FORBID_TAGS: ["img", "style", "form", "input"] });
+  box.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener noreferrer"; });
+  box.querySelectorAll("table").forEach(t => { const w = el("div", "tbl"); t.replaceWith(w); w.append(t); });
+  box.querySelectorAll("p").forEach(p => {
+    if (/^sources:?$/i.test(p.textContent.trim()) && p.nextElementSibling?.tagName === "UL") {
+      const ul = p.nextElementSibling; ul.className = "sources";
+      ul.querySelectorAll("a").forEach(a => { try { a.textContent = new URL(a.href).hostname.replace(/^www\./, ""); } catch {} });
+    }
+  });
+  return box;
+}
+
+function toast(text) { document.querySelector(".toast")?.remove(); const t = el("div", "toast", text); t.setAttribute("role", "status"); document.body.append(t); setTimeout(() => t.remove(), 3500); }
+function render(...nodes) { $("view").replaceChildren(...nodes); }
+
+const NAV = document.querySelector("nav");
+const navEnd = () => { NAV.classList.toggle("end", NAV.scrollLeft + NAV.clientWidth >= NAV.scrollWidth - 1); NAV.classList.toggle("begun", NAV.scrollLeft > 1); };
+const showActive = () => { const a = NAV.querySelector('[aria-current="page"]'); if (a) NAV.scrollLeft = a.offsetLeft - NAV.offsetLeft - (NAV.clientWidth - a.offsetWidth) / 2; navEnd(); };
+new MutationObserver(showActive).observe(NAV, { subtree: true, childList: true, characterData: true });
+NAV.onscroll = navEnd;
+function navState() {
+  const cur = PHONE && view === "reader" ? tab : EXT.views[view]?.nav || NAV_OF[view] || view;
+  document.querySelectorAll("nav button").forEach(b => b.setAttribute("aria-current", b.dataset.view === cur ? "page" : "false"));
+  showActive();
+}
+
+function go(v) {
+  if (PHONE && !PHONE_VIEWS.includes(v)) return;
+  const was = view;
+  view = tab = v;
+  document.body.dataset.view = v;
+  history.replaceState(null, "", "#" + v);
+  navState();
+  document.body.classList.toggle("map", v === "map");
+  document.body.classList.toggle("today", v === "today");
+  document.querySelector(".mapbox").dataset.fade = v === "map" ? "" : "left";
+  lit = null; ember.filter(); draw();
+  if (v !== "map") selectNode(null);
+  (EXT.views[v]?.render || BUILTIN[v])();
+  placeSky(was === "map" || v === "map");
+  window.scrollTo(0, 0);
+}
+
+function screen(...nodes) {
+  const was = view;
+  view = "reader"; lit = null; ember.filter(); ember.light(null); document.body.dataset.view = "reader";
+  document.body.classList.remove("map", "today"); document.querySelector(".mapbox").dataset.fade = "left"; selectNode(null); navState();
+  render(...nodes);
+  placeSky(was === "map");
+  window.scrollTo(0, 0);
+}
+
+/* ---------- Ask palette ---------- */
+function setMode(m) {
+  mode = m;
+  $("m-ask").setAttribute("aria-pressed", m === "ask"); $("m-res").setAttribute("aria-pressed", m === "research");
+  $("q").placeholder = MODES[m].ph; $("hint").textContent = MODES[m].hint + (m === "research" && brain?.paid_api ? " About 20¢." : "");
+}
+
+function openPalette(m, text) {
+  if (PHONE) return;
+  if (document.body.classList.contains("ended")) return;
+  if (m) setMode(m);
+  if (text != null) $("q").value = text;
+  const rec = $("recent"); rec.replaceChildren();
+  if (asks.length) {
+    rec.append(el("span", null, "Recent questions"));
+    asks.slice(0, 4).forEach(a => { const b = el("button", null, a.q); b.type = "button"; b.onclick = () => { $("pal").close(); openAsk(a); }; rec.append(b); });
+  }
+  if (!$("pal").open) $("pal").showModal();
+  $("q").focus();
+}
+const askAbout = text => openPalette("ask", text);
+
+/* ---------- Today ---------- */
+function status(l) {
+  const t = localDay();
+  if (l.due && l.due < t) { const n = daysBetween(l.due, t); return { group: "late", cls: "late-t", text: `Overdue by ${plural(n, "day")}` }; }
+  if (l.due === t) return { group: "today", cls: "soon-t", text: "Due today" };
+  if (l.due) return { group: "soon", cls: "calm-t", text: `Due ${fmtDay(l.due)}` };
+  return { group: "none", cls: "calm-t", text: l.inbox ? "From your inbox" : "No due date" };
+}
+const rank = l => ({ late: 0, today: 1, soon: 2, none: 3 }[status(l).group]) * 10 + ({ high: 0, medium: 1, low: 2 }[l.p] ?? 3);
+// untagged loops still find their project when its name is in the text ("Lakeside" finds lakeside-portal)
+let projectNames = [];
+const projectsIn = t => projectNames.filter(([, re]) => re.test(t)).map(([label]) => label);
+const namesOf = l => {
+  const names = [...l.tags, ...(plain(l.text).match(/\b[A-Z][A-Z0-9]+-\d+\b/g) || []), ...projectsIn(plain(l.text))];
+  const home = !names.length && typeof loopHome === "function" ? loopHome(l.text) : "";
+  return home ? [home] : names;
+};
+
+function lights(node, names) {
+  const on = () => { lit = litFor(names); ember.light(lit, node.matches(".loop, .feed li") ? node : null); };
+  const off = () => { lit = null; ember.light(null); };
+  node.addEventListener("mouseenter", on); node.addEventListener("mouseleave", off);
+  node.addEventListener("focusin", on); node.addEventListener("focusout", e => { if (!node.contains(e.relatedTarget)) off(); });
+}
+
+function closeForm(host, l, onClosed, trigger) {
+  const open = host.querySelector(":scope > .closer");
+  if (open) return open.querySelector("input").focus();
+  const f = el("form", "closer");
+  const note = el("input"); note.placeholder = "What happened? (optional)"; note.maxLength = 200; note.setAttribute("aria-label", "Closing note");
+  const ok = el("button", "btn primary", "Close to-do"); ok.type = "submit";
+  const no = el("button", "btn", "Keep open"); no.type = "button";
+  const msg = el("div", "msg");
+  no.onclick = () => { f.remove(); trigger?.focus(); };
+  f.onsubmit = async e => {
+    e.preventDefault(); ok.disabled = true; ok.textContent = "Closing…";
+    try {
+      const s = await api("/api/done", { method: "POST", body: JSON.stringify({ key: l.key, note: note.value.trim() }) });
+      if (s.still_open) throw new Error("Brain saved it, but the to-do still shows as open. Run brain done in a terminal to close it.");
+      onClosed(PHONE ? await api("/api/brain").catch(() => s) : s);   // the reply is one Mac's list; the phone shows every Mac's
+    } catch (err) { msg.textContent = err.message; ok.disabled = false; ok.textContent = "Close to-do"; }
+  };
+  f.append(note, ok, no, msg); host.append(f); note.focus();
+}
+
+function closed(s, node, names) {
+  node?.querySelector(".tick")?.classList.add("yes");
+  ember.close(node, litFor(names || []));
+  setTimeout(() => node?.classList.add("gone"), 350);
+  setTimeout(() => {
+    brain = s; counts(); lit = null; ember.light(null);
+    if (view !== "today") return;
+    if ([...document.querySelectorAll(".closer")].some(f => !node?.contains(f))) node?.remove(); else renderToday();
+  }, 700);
+  const n = closedToday().length + 1, left = s.loops.filter(l => l.who !== "agent").length;
+  toast(!left ? "That was the last one." : n === 1 ? `First one down. ${left} to go.` : `Closed. ${left} to go.`);
+}
+
+function closedToday() { return (brain?.closed || []).filter(c => c.date === localDay()); }
+const mine = () => (brain?.loops || []).filter(l => l.who !== "agent");
+
+async function setWho(l, btn) {
+  btn.disabled = true;
+  try {
+    brain = await api("/api/who", { method: "POST", body: JSON.stringify({ key: l.key, who: l.who === "agent" ? "you" : "agent" }) });
+    counts(); renderToday();
+    toast(l.who === "agent" ? "Back on your list." : "Handed to your agents.");
+  } catch (err) { btn.disabled = false; toast(err.message); }
+}
+
+// a finished to-do and its receipt: "promised 3 Nov in website → done 5 Nov in checkout, session “Pricing”, commit 1a2b3c4"
+function doneParts(c) {
+  if (!c.to) return { what: c.text, receipt: "" };
+  const [what, by] = c.text.split(": closed by session ");
+  const from = c.from ? `promised ${fmtDay(c.from_date)} in ${c.from} → ` : "";
+  return { what, by: by === what ? "" : by, receipt: `${from}done ${fmtDay(c.date)} in ${c.to}` + (by && by !== what ? `, session “${by}”` : "") + (c.commit ? `, commit ${c.commit}` : "") };
+}
+
+// a promise made in one project and kept in another, drawn as the thread it travelled
+function trail(c) {
+  if (!c.from || c.from === c.to) return null;
+  const t = el("span", "trail"), wire = el("i", "wire");
+  wire.setAttribute("aria-hidden", "true");
+  const end = (label, name, day) => { const e = el("span", "end"); e.append(label, el("b", null, name), fmtDay(day)); return e; };
+  t.append(end("promised in", c.from, c.from_date), wire, end("done in", c.to, c.date));
+  return t;
+}
+
+function loopRow(l) {
+  const li = el("li", "loop");
+  const tick = el("button", "tick" + (l.key ? "" : " off"));
+  tick.type = "button";
+  tick.setAttribute("aria-label", l.key ? "Close this to-do" : "This to-do can't be closed from here");
+  tick.title = l.key ? "Close this to-do" : "Close it with brain done in a terminal";
+  if (l.key) tick.onclick = () => closeForm(li, l, s => closed(s, li, namesOf(l)), tick);
+  const body = el("div");
+  const t = el("div", "lt"); t.append(inline(l.text));
+  const m = el("div", "lm");
+  const st = status(l);
+  if (l.who === "agent") m.append(el("span", null, "Waiting for a session"));
+  if (st.group !== "none") m.append(el("span", st.group === "late" ? "hi" : "", st.text));
+  if (l.p === "high") m.append(el("span", "hi", "High priority"));
+  m.append(el("span", null, `Added ${fmtDay(l.date)}`));
+  l.tags.slice(0, 2).forEach(x => m.append(el("span", "tag", x)));
+  if (l.lane) m.append(el("span", "tag lane", l.lane));
+  if (l.src) li.dataset.src = l.src;
+  if (typeof openReceipt === "function" && l.id) { const r = el("button", "rc", "Where from"); r.type = "button"; r.onclick = () => openReceipt(l); m.append(r); }
+  body.append(t, m);
+  const a = el("button", "ghost", "Ask"); a.type = "button";
+  a.onclick = () => askAbout(`What's the context and next step for: ${plain(l.text).slice(0, 200)}`);
+  const side = el("div", "side");
+  if (l.key) { const w = el("button", "ghost who", l.who === "agent" ? "Take it back" : "Hand to agents"); w.type = "button"; w.onclick = () => setWho(l, w); side.append(w); }
+  side.append(a);
+  if (PHONE) {
+    if (l.key && window.phoneCanTick?.(l)) li.append(tick, body);   // an owner or editor closes from the phone; nothing else changes there
+    else { const dot = el("span", "tick ro"); dot.setAttribute("aria-hidden", "true"); li.append(dot, body); }
+    li.onclick = e => { if (!e.target.closest("button, a, form")) li.querySelector(".rc")?.click(); };   // the whole row is the tap target on a phone
+  } else li.append(tick, body, side);
+  lights(li, namesOf(l));
+  return li;
+}
+
+// redraw Today and keep a section where it was on screen, so "Show less" does not jump
+function keep(selector, before) {
+  const top = before.getBoundingClientRect().top;
+  renderToday();
+  // ponytail: the Today cards above load after the redraw and push the list down, so the pin is repeated for 600 ms; slower cards still shift it
+  const pin = () => { const after = view === "today" && document.querySelector(selector); if (after) window.scrollTo(0, after.getBoundingClientRect().top + scrollY - top); };
+  pin();
+  const timers = [60, 160, 320, 600].map(ms => setTimeout(pin, ms)), stop = () => timers.forEach(clearTimeout);
+  for (const ev of ["wheel", "touchstart", "keydown"]) addEventListener(ev, stop, { once: true, passive: true });
+}
+
+function renderToday() {
+  if (!brain) return render(working("Loading your Brain…"));
+  const t = localDay();
+  const all = [...brain.loops].sort((a, b) => rank(a) - rank(b) || b.date.localeCompare(a.date));
+  const loops = all.filter(l => l.who !== "agent"), agents = all.filter(l => l.who === "agent");
+  const late = loops.filter(l => status(l).group === "late").length;
+  const won = closedToday().length;
+  const fresh = brain.decisions.filter(d => d.date === t).length;
+
+  const hello = el("section", "hello");
+  const hr = new Date().getHours();
+  hello.append(el("h1", null, hr < 5 ? "Still up" : hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening"));
+  const landed = graph ? graph.nodes.filter(n => n.heat >= 0.8 && n.id.startsWith("f:")).length : 0;
+  const p = el("p");
+  p.append(el("b", null, agents.length ? `${loops.length} for you` : plural(loops.length, "open to-do")));
+  if (late) p.append(", ", el("b", "late", `${late} overdue`));
+  p.append(agents.length ? `, ${agents.length} with your agents. ` : ". ");
+  if (won) p.append("You closed ", el("b", "won", String(won)), " today. ");
+  if (landed) p.append(`${plural(landed, "note")} landed today.`);
+  else if (fresh) p.append(`${plural(fresh, "new note")} since this morning.`);
+  hello.append(p);
+  const nodes = [hello];
+
+  if (loops.length) {
+    const top = loops[0], st = status(top);
+    const hero = el("section", "now"); hero.setAttribute("aria-label", "Next up");
+    const why = el("div", "why");
+    const lead = el("span", "lead"); lead.append(el("i", "pulse"), "Next up"); why.append(lead);
+    why.append(el("span", st.cls, st.text));
+    if (top.p === "high") why.append(el("span", "late-t", "High priority"));
+    const h = el("h2", "as-is"); h.append(inline(top.text));
+    const acts = el("div", "acts");
+    if (top.key) {
+      const c = el("button", "btn primary", "Close to-do"); c.type = "button";
+      c.onclick = () => closeForm(hero, top, s => closed(s, hero, namesOf(top)), c);
+      acts.append(c);
+    }
+    const a = el("button", "btn", "Ask about it"); a.type = "button";
+    a.onclick = () => askAbout(`What's the context and next step for: ${plain(top.text).slice(0, 200)}`);
+    acts.append(a);
+    const names = namesOf(top);
+    if (graph && litFor(names).size) {
+      const m = el("button", "btn", "Show on map"); m.type = "button";
+      m.onclick = () => { const n = [...litFor(names)][0]; go("map"); setTimeout(() => { selectNode(n); focusOn(n); }, reduced ? 0 : 780); };
+      acts.append(m);
+    }
+    hero.append(why, h, ...(PHONE ? [] : [acts]));
+    lights(hero, names);
+    const tied = [...litFor(names)][0];
+    if (tied) { hero.dataset.tether = ""; hero.wakeNode = tied; }
+    nodes.push(hero);
+  }
+
+  const dated = el("div", "groups");
+  nodes.push(dated);
+  const lanes = el("div", "groups");
+  if (agents.length) {
+    const sec = el("section", "group g-agents");
+    const h = el("h3", null, "With your agents "); h.append(el("span", null, String(agents.length)));
+    const ul = el("ul", "loops"); (agentsAll ? agents : agents.slice(0, 3)).forEach(l => ul.append(loopRow(l)));
+    sec.append(h, el("p", "nothing", "Work an agent can finish alone in a repo. Claude or Codex sees these when a session starts, and finished ones move below."), ul);
+    if (agents.length > 3) {
+      const more = el("button", "more", agentsAll ? "Show less" : `Show ${agents.length - 3} more`); more.type = "button";
+      more.onclick = () => { agentsAll = !agentsAll; keep(".g-agents", sec); };
+      sec.append(more);
+    }
+    lanes.append(sec);
+  }
+  const finished = brain.closed.filter(c => c.to && daysBetween(c.date, t) <= 7).slice(0, 5);
+  if (finished.length) {
+    const sec = el("section", "group g-finished");
+    const h = el("h3", null, "Agents finished these "); h.append(el("span", null, String(finished.length)));
+    const ul = el("ul", "loops");
+    finished.forEach(c => {
+      const { what, by, receipt } = doneParts(c), li = el("li", "loop"), body = el("div"), lt = el("div", "lt"), lm = el("div", "lm"), tr = trail(c);
+      lt.append(inline(what)); lm.append(el("span", null, tr ? `session “${by}”` : receipt)); if (c.lane) lm.append(el("span", "tag lane", c.lane));
+      body.append(lt, ...(tr ? [tr] : []), ...(tr && !by && !c.lane ? [] : [lm]));
+      li.append(el("span", "tick yes"), body); lights(li, [c.from, c.to].filter(Boolean)); ul.append(li);
+    });
+    sec.append(h, ul);
+    if (PHONE) { const first = el("div", "groups"); first.append(sec); nodes.splice(nodes.indexOf(dated), 0, first); } else lanes.append(sec);
+  }
+  if (lanes.children.length) nodes.push(lanes);
+
+  const groups = el("div", "groups");
+  for (const [g, name] of [["late", "Overdue"], ["today", "Due today"], ["soon", "Coming up"], ["none", "No due date"]]) {
+    const items = loops.slice(1).filter(l => status(l).group === g);
+    if (!items.length) continue;
+    const sec = el("section", "group g-" + g);
+    const h = el("h3", null, (g === "none" ? "Whenever" : name) + " "); h.append(el("span", null, String(items.length)));
+    const ul = el("ul", "loops"); items.forEach(l => ul.append(loopRow(l)));
+    sec.append(h, ul); (g === "none" ? groups : dated).append(sec);
+  }
+  if (!dated.children.length) nodes.splice(nodes.indexOf(dated), 1);
+  const bf = brain.backfill;
+  const empty = !brain.decisions.length && !brain.closed.length && !agents.length;
+  const wait = bf && bf.sessions ? ` Wake is also reading up to ${bf.sessions} sessions from the last ${bf.days} days, 5 an hour. To go further back, set schedule.backfill_days in brain.json.` : "";
+  if (!loops.length) groups.append(el("p", "nothing", empty ? "Finish a Claude Code or Codex session and its note shows up here." + wait : agents.length ? "Nothing needs you right now." : "Nothing open. New to-dos land here when your agents or inbox add them." + wait));
+  nodes.push(groups);
+  if (!PHONE) EXT.today.forEach(f => { try { const x = f(); if (x) nodes.push(x); } catch (err) { console.error(err); } });
+
+  const feed = el("section", "feed");
+  const items = [
+    ...closedToday().map(c => ({ date: c.date, ...doneParts(c), won: true })),
+    ...brain.decisions.map(d => ({ date: d.date, text: d.text, tag: d.tags[0] })),
+  ];
+  if (items.length) feed.append(el("h3", null, "Lately in your Brain"));
+  const shown = feedAll ? items : items.slice(0, 8);
+  const ol = el("ol");
+  let last = "";
+  shown.forEach(d => {
+    if (d.date !== last) {
+      last = d.date;
+      const diff = daysBetween(d.date, t);
+      ol.append(el("li", "day", diff === 0 ? "Today" : diff === 1 ? "Yesterday" : fmtDay(d.date)));
+    }
+    const li = el("li", d.won ? "won" : null);
+    const body = el("div"); body.append(inline(d.won ? "Done: " + d.what : d.text));
+    if (d.receipt) body.append(el("span", "p", d.receipt));
+    if (d.tag) body.append(el("span", "p", d.tag));
+    li.append(el("i", "dot"), body);
+    if (d.tag) lights(li, [d.tag]);
+    ol.append(li);
+  });
+  feed.append(ol);
+  if (items.length > 8) {
+    const more = el("button", "more", feedAll ? "Show less" : `Show ${items.length - 8} more`); more.type = "button";
+    more.onclick = () => { feedAll = !feedAll; keep(".feed", feed); };
+    feed.append(more);
+  }
+  if (items.length) nodes.push(feed);
+  render(...nodes);
+}
+
+/* ---------- Lists ---------- */
+function listHead(title, sub, onFilter) {
+  const h = el("div", "head");
+  h.append(el("h1", null, title)); if (sub) h.append(el("p", null, sub));
+  if (onFilter) { const f = el("input", "filter"); f.type = "search"; f.placeholder = "Filter"; f.setAttribute("aria-label", "Filter"); f.oninput = () => onFilter(f.value.toLowerCase()); h.append(f); }
+  return h;
+}
+
+function rowsList(items, make) {
+  const ul = el("ul", "rows");
+  items.forEach(x => { const li = el("li"); li.append(make(x)); ul.append(li); });
+  return ul;
+}
+
+function renderProjects() {
+  if (!brain) return render(working("Loading your Brain…"));
+  const box = el("div");
+  const fill = f => box.replaceChildren(rowsList(brain.projects.filter(p => !f || (p.slug + p.text).toLowerCase().includes(f)), p => {
+    const b = el("button"); b.type = "button"; b.title = "Ask your Brain where this stands";
+    b.append(el("b", null, p.slug), el("span", "when", fmtDay(p.date)), el("span", "sub", p.text));
+    b.onclick = () => askAbout(`Where does ${p.slug} stand, and what's the next step?`);
+    lights(b, [p.slug]);
+    return b;
+  }));
+  fill("");
+  render(listHead("Projects", "Hover one to find it in your Brain. Click to ask where it stands.", fill), box);
+}
+
+function renderResearch() {
+  const box = el("div");
+  const fill = f => box.replaceChildren(reports.length ? rowsList(reports.filter(r => !f || r.title.toLowerCase().includes(f)), r => {
+    const b = el("button"); b.type = "button";
+    b.append(el("b", null, plain(r.title)), el("span", "when", r.when));
+    b.onclick = () => openReport(r.name);
+    return b;
+  }) : el("p", "nothing", "No reports yet. Press ⌘K, pick The web, and ask something."));
+  fill("");
+  render(listHead("Research", "Every web report is kept here.", fill), box);
+}
+
+function renderAsks() {
+  const box = el("div");
+  const fill = f => box.replaceChildren(asks.length ? rowsList(asks.filter(a => !f || a.q.toLowerCase().includes(f)), a => {
+    const b = el("button"); b.type = "button";
+    b.append(el("b", null, a.q), el("span", "when", a.when), el("span", "sub", plain(a.md).slice(0, 200)));
+    b.onclick = () => openAsk(a);
+    return b;
+  }) : el("p", "nothing", "Questions you ask your Brain are kept here, in this browser."));
+  fill("");
+  render(listHead("Asked", "Your recent questions to your Brain.", fill), box);
+}
+
+function reader(label, back, text, foot) {
+  const a = el("article", "reader");
+  const top = el("div", "reader-top");
+  const b = el("button", "back", "Back to " + back.label.toLowerCase()); b.type = "button"; b.onclick = () => go(back.view);
+  const copy = el("button", "btn", "Copy as Markdown"); copy.type = "button";
+  copy.onclick = () => navigator.clipboard.writeText(text).then(() => { copy.textContent = "Copied"; setTimeout(() => copy.textContent = "Copy as Markdown", 1500); }, () => { copy.textContent = "Copy failed"; });
+  top.append(b, copy);
+  a.append(top);
+  if (label) a.append(el("p", "reader-q", label));
+  a.append(md(text));
+  if (foot) a.append(el("div", "reader-foot", foot));
+  return a;
+}
+
+async function openReport(name, info) {
+  const r = await api("/api/report/" + encodeURIComponent(name));
+  screen(reader("", { label: "Research", view: "research" }, r.md, info ? `${name}  ${info}` : name));
+}
+
+function openAsk(x) { screen(reader(x.q, { label: "Your questions", view: "asks" }, x.md, x.info)); }
+
+function working(title, sub, err, retry) {
+  const w = el("section", "working" + (err ? " err" : ""));
+  w.setAttribute("role", "status");
+  w.append(el("p", "t", title));
+  if (sub) w.append(el("p", "s", sub));
+  if (!err) { const b = el("div", "bar"); b.append(el("i")); w.append(b); }
+  if (retry) { const r = el("button", "btn", "Try again"); r.type = "button"; r.onclick = retry; const a = el("div", "acts"); a.append(r); w.append(a); }
+  return w;
+}
+
+function counts() {
+  const t = localDay();
+  if (PHONE) {
+    const [day, time] = (brain?.rebuilt || "").split(" ");
+    const chip = $("ro") || el("span", "ro"); chip.id = "ro";
+    const dated = /^\d{4}-\d\d-\d\d$/.test(day) && /^\d\d:\d\d/.test(time);
+    const ticks = window.phoneRole === "owner" || window.phoneRole === "editor";
+    const when = dated ? `${day === t ? "" : fmtDay(day) + ", "}${time}` : "";
+    chip.textContent = when ? (ticks ? "As of " : "Read-only, as of ") + when : ticks ? "Live" : "Read-only";
+    chip.title = (ticks ? "Tick a to-do to close it on the Mac. Nothing else changes from here." : "This view cannot change anything.") + (dated ? " It shows the Mac's notes as they were at that time." : "");
+    if (!chip.isConnected) $("askpill").before(chip);
+  }
+  const late = mine().filter(l => l.due && l.due < t).length;
+  $("c-today").textContent = brain ? mine().length : "";
+  $("c-today").className = "n" + (late ? " late" : "");
+  $("c-today").title = late ? `${late} overdue` : "";
+  $("c-projects").textContent = brain ? brain.projects.length : "";
+  for (const [id, spec] of Object.entries(EXT.views)) { const c = $("c-" + id); if (c && spec.count) { try { c.textContent = spec.count() || ""; } catch {} } }
+}
+async function refreshBrain() { brain = await api("/api/brain"); counts(); return brain; }
+
+/* ---------- The map as light, behind every view ---------- */
+const sky = $("sky");
+let graph = null, selected = null, matches = null, lit = null;
+const byLabel = new Map(), hiddenTypes = new Set();
+const MAP_TYPES = [["projects", "Projects"], ["areas", "Areas"], ["ideas", "Ideas"], ["log", "Daily logs"], ["memories", "Memories"], ["briefs", "Briefs & meetings"], ["inbox", "Inbox"], ["ticket", "Tickets"], ["topic", "People, tools & topics"]];
+const groupOf = t => MAP_TYPES.some(([g]) => g === t) ? t : t === "meetings" || t === "root" ? "briefs" : "topic";
+const visible = n => !hiddenTypes.has(n.g);
+const RING = new Set(["memories", "briefs", "inbox"]);
+const kindDot = g => { const d = el("i", RING.has(g) ? "ring" : null); d.style.color = `var(--c-${g})`; return d; };
+
+const ember = WakeMap({ draw: WAKE_DRAW, onHover: n => sky.classList.toggle("hover", view === "map" && !!n) });
+ember.visible = n => view !== "map" || visible(n);
+const zoom = d3.zoom().scaleExtent([0.5, 6])
+  .filter(e => view === "map" && (!e.ctrlKey || e.type === "wheel") && !e.button)
+  .on("zoom", e => { ember.view = e.transform; ember.redraw(); });
+d3.select(sky).call(zoom).on("dblclick.zoom", null);
+const draw = () => {
+  document.body.classList.toggle("nomatch", view === "map" && !!matches && !matches.size);
+  if (view !== "map") return ember.light(lit);
+  ember.light(matches || (selected ? new Set([selected, ...selected.nb]) : null), null, matches ? 1 : 0.4);
+};
+
+function litFor(names) {
+  const s = new Set();
+  if (graph) names.forEach(x => { const n = byLabel.get(String(x).toLowerCase()); if (n) s.add(n); });
+  return s;
+}
+
+function placeSky(animate) {
+  if (animate && !reduced) d3.select(sky).transition().duration(600).ease(d3.easeCubicInOut).call(zoom.transform, d3.zoomIdentity);
+  else { d3.select(sky).interrupt(); d3.select(sky).call(zoom.transform, d3.zoomIdentity); }
+}
+
+async function loadGraph() {
+  const g = await api("/api/graph");
+  const byId = new Map(g.nodes.map(n => [n.id, n]));
+  g.nodes.forEach(n => { n.g = groupOf(n.type); n.deg = 0; n.nb = new Set(); });
+  g.links.forEach(l => { const a = byId.get(l.source), b = byId.get(l.target); a.deg += l.w; b.deg += l.w; a.nb.add(b); b.nb.add(a); });
+  g.nodes.forEach(n => n.r = (n.g === "topic" ? 1.3 : 2.4) + Math.sqrt(n.deg) * (n.g === "topic" ? 0.8 : 1.15) + (n.g === "projects" ? 1 : 0));
+  g.byDeg = [...g.nodes].sort((a, b) => b.deg - a.deg);
+  g.nodes.forEach(n => { const k = n.label.toLowerCase(); if (!byLabel.has(k) || n.id.startsWith("f:")) byLabel.set(k, n); });
+  const sim = d3.forceSimulation(g.nodes)
+    .force("link", d3.forceLink(g.links).id(n => n.id).distance(l => 18 + l.source.r + l.target.r))
+    .force("charge", d3.forceManyBody().strength(n => -24 - n.r * 9).distanceMax(420))
+    .force("x", d3.forceX(0).strength(0.05)).force("y", d3.forceY(0).strength(0.05))
+    .force("collide", d3.forceCollide(n => n.r + 1.5))
+    .stop();
+  for (let i = 0; i < 360; i++) sim.tick();
+  g.nodes.forEach(n => { n.kind = n.g; n.root = n.id.startsWith("f:") && !n.id.includes("/"); });
+  const esc = x => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  projectNames = g.nodes.filter(n => n.g === "projects").flatMap(n => {
+    const head = n.label.split(/[-\s]/)[0], words = [n.label.split(/[-\s]+/).map(esc).join("[-\\s]")];
+    if (head.length >= 4) words.push(esc(head));
+    try { return [[n.label, new RegExp(`\\b(${words.join("|")})\\b`, "i")]]; } catch { return []; }
+  });
+  graph = g;
+  $("c-map").textContent = g.nodes.length;
+  ember.setGraph(g);
+  if (view === "map") renderMapUI();
+  if (view === "today") renderToday();
+}
+
+let graphErr = null;
+function fetchGraph() {
+  graphErr = null; document.body.classList.remove("nograph");
+  return loadGraph().catch(err => { graphErr = err.message; document.body.classList.add("nograph"); if (view === "map") renderMapUI(); });
+}
+
+function renderMapUI() {
+  if (graphErr) return render(working("Couldn't draw the map.", graphErr, true, () => { fetchGraph(); renderMapUI(); }));
+  render();
+  if (!graph) { $("mapstats").textContent = "Drawing your Brain…"; return; }
+  const files = graph.nodes.filter(n => n.id.startsWith("f:")).length;
+  const hot = graph.nodes.filter(n => n.heat >= 0.8).length;
+  $("mapstats").replaceChildren(`${files} notes, ${graph.links.length.toLocaleString()} links, ${hot} lit today. `, el("kbd", null, "scroll"), " to zoom, ", el("kbd", null, "drag"), " to move.");
+  const legend = $("legend"); legend.replaceChildren();
+  MAP_TYPES.forEach(([g, name]) => {
+    const n = graph.nodes.filter(x => x.g === g).length; if (!n) return;
+    const b = el("button"); b.type = "button"; b.setAttribute("aria-pressed", !hiddenTypes.has(g));
+    b.append(kindDot(g), name + " ", el("span", null, String(n)));
+    b.onclick = () => { hiddenTypes.has(g) ? hiddenTypes.delete(g) : hiddenTypes.add(g); b.setAttribute("aria-pressed", !hiddenTypes.has(g)); if (selected && !visible(selected)) selectNode(null); ember.filter(); };
+    legend.append(b);
+  });
+}
+
+function focusOn(n) {
+  const V = ember.view, k = Math.max(V.k, 1.6), bx = (n.px - V.x) / V.k, by = (n.py - V.y) / V.k;
+  const cx = selected && innerWidth > 900 ? (innerWidth - 400) / 2 : innerWidth / 2;
+  const t = d3.zoomIdentity.translate(cx - bx * k, innerHeight / 2 - by * k).scale(k);
+  if (reduced) d3.select(sky).call(zoom.transform, t); else d3.select(sky).transition().duration(650).call(zoom.transform, t);
+}
+
+async function selectNode(n) {
+  selected = n; ember.selected = n;
+  const panel = $("panel");
+  panel.replaceChildren(); panel.hidden = !n; draw();
+  if (!n) return;
+  const x = el("button", "x", "×"); x.type = "button"; x.setAttribute("aria-label", "Close"); x.onclick = () => selectNode(null);
+  const kind = el("span", "kind"); const dot = kindDot(n.g);
+  const kname = (MAP_TYPES.find(([g]) => g === n.g) || [, "Note"])[1];
+  kind.append(dot, `${kname}, ${plural(n.nb.size, "connection")}`);
+  const acts = el("div", "acts");
+  const ask = el("button", "btn primary", "Ask Brain about it"); ask.type = "button";
+  ask.onclick = () => askAbout(n.g === "projects" ? `Where does ${n.label} stand, and what's the next step?` : `What does my Brain say about ${n.label}?`);
+  acts.append(ask);
+  if (typeof openNote === "function") { const o = el("button", "btn", "Open"); o.type = "button"; o.onclick = () => openNote(n.id); acts.prepend(o); }
+  panel.append(x, kind, el("h2", "as-is", n.label), acts);
+  const nbs = [...n.nb].filter(visible).sort((a, b) => b.deg - a.deg);
+  if (nbs.length) {
+    panel.append(el("h3", null, "Linked to"));
+    const list = el("div", "nbrs");
+    nbs.slice(0, 40).forEach(m => {
+      const b = el("button"); b.type = "button";
+      b.append(kindDot(m.g), m.label); b.onclick = () => { selectNode(m); focusOn(m); }; list.append(b);
+    });
+    if (nbs.length > 40) list.append(el("span", "lm", `and ${nbs.length - 40} more`));
+    panel.append(list);
+  }
+  if (n.id.startsWith("f:")) {
+    try {
+      const r = await api("/api/note?id=" + encodeURIComponent(n.id));
+      if (selected !== n) return;
+      panel.append(el("h3", null, "In the note"));
+      const pv = md(r.md.replace(/^---[\s\S]*?---\s*/, "").slice(0, 2500)); pv.className = "preview";
+      panel.append(pv);
+    } catch {}
+  }
+}
+
+sky.addEventListener("click", ev => { if (view !== "map" || !graph) return; const [x, y] = d3.pointer(ev, sky), n = ember.pick(x, y); selectNode(n); if (n) focusOn(n); });
+$("find").addEventListener("input", () => {
+  const q = $("find").value.trim().toLowerCase();
+  matches = q && graph ? new Set(graph.nodes.filter(n => n.label.toLowerCase().includes(q))) : null;
+  draw();
+});
+$("find").addEventListener("keydown", e => {
+  if (e.key !== "Enter" || !matches?.size) return;
+  const n = [...matches].filter(visible).sort((a, b) => b.deg - a.deg)[0];
+  if (n) { selectNode(n); focusOn(n); }
+});
+
+/* ---------- Boot ---------- */
+async function loadAll() {
+  const [b, r] = await Promise.allSettled([api("/api/brain"), api("/api/reports")]);
+  if (b.status === "fulfilled") brain = b.value;
+  if (r.status === "fulfilled") reports = r.value;
+  counts();
+  if (view === "reader") return;
+  if (b.status === "rejected") screen(PHONE && window.phoneGone && /isn't connected/.test(b.reason.message) ? phoneGone()
+    : working("Couldn't read your Brain.", b.reason.message + (PHONE ? "" : " Check that ~/Brain/NOW.md exists, then reload."), true));
+  else go(view);
+}
+
+$("form").onsubmit = async e => {
+  e.preventDefault();
+  const q = $("q").value.trim(), m = mode;
+  if (!q || busy) return;
+  $("pal").close();
+  busy = true;
+  const start = Date.now();
+  const title = m === "ask" ? "Reading your notes" : "Searching the web and reading sources";
+  screen(working(title + "…", q));
+  const timer = setInterval(() => {
+    const s = Math.round((Date.now() - start) / 1000);
+    const t = document.querySelector(".working .t"); if (t) t.textContent = `${title}  ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  }, 1000);
+  try {
+    if (m === "ask") {
+      const r = await api("/api/ask", { method: "POST", body: JSON.stringify({ q }) });
+      if (!r.md) throw new Error(r.info || "No answer came back.");
+      const x = { q, md: r.md, info: r.info, t: Date.now(), when: new Date().toLocaleString([], { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) };
+      asks.unshift(x); asks = asks.slice(0, 50);
+      try { localStorage.setItem("asks", JSON.stringify(asks)); } catch {}
+      counts(); openAsk(x);
+    } else {
+      const { job } = await api("/api/research", { method: "POST", body: JSON.stringify({ q }) });
+      while (true) {
+        await new Promise(s => setTimeout(s, 3000));
+        const j = await api("/api/job/" + job);
+        if (j.status === "running") continue;
+        if (j.status !== "done") throw new Error(j.info || "The research run failed.");
+        reports = await api("/api/reports"); counts();
+        await openReport(j.name, j.info);
+        break;
+      }
+    }
+    $("q").value = "";
+  } catch (err) {
+    screen(working("That didn't work.", `${err.message} If it keeps failing, check that Claude Code or Codex is signed in, or the key in ~/.config/anthropic/key.env if you use one.`, true));
+  } finally { clearInterval(timer); busy = false; }
+};
+
+$("m-ask").onclick = () => { setMode("ask"); $("q").focus(); };
+$("m-res").onclick = () => { setMode("research"); $("q").focus(); };
+$("askpill").onclick = () => openPalette();
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => go(b.dataset.view));
+document.addEventListener("keydown", e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); if (!PHONE) openPalette(); }
+  else if (e.key === "Escape" && view === "map" && selected && !$("pal").open) selectNode(null);
+});
+addEventListener("hashchange", () => { if ($("pal").open) $("pal").close(); const h = location.hash.slice(1); if (viewOk(h) && h !== view) go(h); });
+addEventListener("focus", () => {
+  if (busy || view !== "today" || document.querySelector(".closer")) return;
+  api("/api/brain").then(b => { brain = b; counts(); if (view === "today" && !busy && !document.querySelector(".closer")) renderToday(); }).catch(() => {});
+});
+
+addEventListener("DOMContentLoaded", () => {
+  if (PHONE) {
+    document.body.classList.add("phone"); $("askpill").hidden = true;
+    document.querySelectorAll("nav button").forEach(b => b.hidden = !PHONE_VIEWS.includes(b.dataset.view));
+  }
+  const h = location.hash.slice(1);
+  if (viewOk(h)) view = h;
+  setMode("ask");
+  Promise.resolve(window.phoneReady?.()).then(() => { loadAll(); fetchGraph(); });
+});
+</script>
+<script src="static/controls.js"></script>
+<script src="static/theme.js"></script>
+<script src="static/inbox.js"></script>
+<script src="static/notes.js"></script>
+<script src="static/boards.js"></script>
+<script src="static/review.js"></script>
+<script src="static/brief.js"></script>
+<script src="static/ledger.js"></script>
+<script src="static/worklog.js"></script>
+<script src="static/privacy.js"></script>
+<script src="static/licence.js"></script>
+</body>
+</html>
