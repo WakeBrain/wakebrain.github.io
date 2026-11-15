@@ -38,7 +38,7 @@
       grid.append(b);
     });
     paint();
-    host.append(el("h3", null, "Appearance"), el("p", "nothing", "Pick a theme. It is saved in your vault's brain.json, so it follows the vault."), grid);
+    host.append(el("h3", null, "Appearance"), el("p", "nothing", "Pick a theme. In the demo it lasts until you close the tab."), grid);
     return host;
   };
 })();

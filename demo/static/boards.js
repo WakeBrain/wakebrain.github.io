@@ -38,7 +38,7 @@
     try {
       await s.saving;
       s.saved = revision;
-      if (session === s) setStatus(s.saved === s.revision ? 'Saved' : 'Unsaved');
+      if (session === s) setStatus(s.saved === s.revision ? 'Demo: not saved' : 'Unsaved');
     } catch (e) {
       if (session === s) setStatus('Not saved, retrying');
       throw e;
@@ -131,7 +131,7 @@
     const bar = el('div', 'bd-toolbar');
     const more = el('details', 'bd-more'), morePanel = el('div', 'bd-more-panel');
     more.append(el('summary', 'btn', 'More'), morePanel);
-    status = button('Saved', () => flush(), 'bd-status btn'); status.setAttribute('aria-live', 'polite');
+    status = button('Demo: not saved', () => flush(), 'bd-status btn'); status.setAttribute('aria-live', 'polite');
     zoomLabel = el('span', 'bd-status', '100%');
     const colour = el('select', 'bd-colour'); colour.setAttribute('aria-label', 'Selected card colour');
     ['Default', 'Red', 'Amber', 'Coral', 'Cool', 'Ink', 'Ember'].forEach((name, i) => {
@@ -339,7 +339,7 @@
   }
   document.addEventListener('keydown', e => {
     if (!session || document.body.dataset.view !== 'boards' || editable(e.target) || picker || e.target.closest('dialog')) return;
-    if (e.key === 'Escape') { connecting = null; select(null); setStatus(session.saved === session.revision ? 'Saved' : 'Unsaved'); }
+    if (e.key === 'Escape') { connecting = null; select(null); setStatus(session.saved === session.revision ? 'Demo: not saved' : 'Unsaved'); }
     if (['Delete', 'Backspace'].includes(e.key) && selected) {
       e.preventDefault();
       session.canvas.nodes = session.canvas.nodes.filter(n => n.id !== selected);
@@ -397,7 +397,7 @@
     try {
       const result = await post('ask', {slug: s.slug, question});
       if (active(s)) screen(reader(question, {label: 'Board', view: 'boards'}, result.md, result.info));
-    } finally { s.asking = false; if (session === s) setStatus(s.saved === s.revision ? 'Saved' : 'Unsaved'); }
+    } finally { s.asking = false; if (session === s) setStatus(s.saved === s.revision ? 'Demo: not saved' : 'Unsaved'); }
   }
   registerView('boards', {render: listView, count: () => boards.length, nav: 'boards'});
   document.addEventListener('DOMContentLoaded', () => refreshList().catch(() => {}));
