@@ -4,21 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#2a1840">
-<meta name="description" content="Wake writes down what you promise in each Claude Code or Codex session, then shows where it got done, even in another repo. Plain Markdown on your Mac.">
-<title>Wake: nothing you promise slips through</title>
+<meta name="description" content="When a Claude Code or Codex session ends, Wake writes down what was decided and what is still open. The next session in that repo starts with it. Plain Markdown on your Mac.">
+<title>Wake: the handoff you forget to write</title>
 <link rel="canonical" href="https://wakebrain.github.io/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Wake">
 <meta property="og:url" content="https://wakebrain.github.io/">
-<meta property="og:title" content="Wake: nothing you promise slips through">
-<meta property="og:description" content="Wake writes down what you promise in each Claude Code or Codex session, then shows where it got done, even in another repo. Plain Markdown on your Mac.">
+<meta property="og:title" content="Wake: the handoff you forget to write">
+<meta property="og:description" content="When a Claude Code or Codex session ends, Wake writes down what was decided and what is still open. The next session in that repo starts with it. Plain Markdown on your Mac.">
 <meta property="og:image" content="https://wakebrain.github.io/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Wake: nothing you promise slips through, with the Today screen of the app">
+<meta property="og:image:alt" content="Wake: the handoff you forget to write, above the Today screen of the app">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Wake: nothing you promise slips through">
-<meta name="twitter:description" content="Wake writes down what you promise in each Claude Code or Codex session, then shows where it got done, even in another repo. Plain Markdown on your Mac.">
+<meta name="twitter:title" content="Wake: the handoff you forget to write">
+<meta name="twitter:description" content="When a Claude Code or Codex session ends, Wake writes down what was decided and what is still open. The next session in that repo starts with it. Plain Markdown on your Mac.">
 <meta name="twitter:image" content="https://wakebrain.github.io/og.png">
 <link rel="preload" href="fonts/mona-sans.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="landing.css?v=5">
@@ -36,7 +36,7 @@
     Wake
   </a>
   <nav aria-label="Page">
-    <a href="#app">The app</a>
+    <a href="demo/">Demo</a>
     <a href="#works">Integrations</a>
     <a href="#pricing">Pricing</a>
   </nav>
@@ -47,10 +47,10 @@
   <div class="mapbox" aria-hidden="true" data-fade="left"></div>
   <section class="hero" aria-labelledby="hero-h">
     <div class="hero-text" data-quiet>
-      <h1 id="hero-h">Nothing you promise slips through</h1>
-      <p class="hero-lede">Promise it in one repo, finish it in another, see the proof.</p>
-      <div class="acts"><a class="btn primary" href="https://buy.polar.sh/polar_cl_RY5sufCcn7mrCrFExtuwMNFq7HFmd3nYXogRp3LDhf8" data-buy>Buy Wake, $59</a><a class="btn" href="#app">See how it works</a></div>
-      <p class="hero-note">$59 once. One vault of plain Markdown on your Mac. Works with Claude Code, Codex, or both.</p>
+      <h1 id="hero-h">The handoff you forget to write</h1>
+      <p class="hero-lede">Wake writes it when a Claude Code or Codex session ends. The next session in that repo starts with it. An agent's to&#8209;do only closes when a commit landed.</p>
+      <div class="acts"><a class="btn primary" href="https://buy.polar.sh/polar_cl_RY5sufCcn7mrCrFExtuwMNFq7HFmd3nYXogRp3LDhf8" data-buy>Buy Wake, $59</a><a class="btn" href="demo/">Try the demo</a></div>
+      <p class="hero-note">$59 once. Needs a Mac and Claude Code or Codex. The demo runs in your browser on invented notes.</p>
     </div>
     <figure class="stage" data-quiet>
       <img fetchpriority="high" id="stage-img" data-shot="today" src="img/app/dusk/today.webp" width="2160" height="1350" alt="Wake's Today screen: the next to-do, what is coming up and what is with your agents, beside the map of your notes">
@@ -72,10 +72,10 @@
       <h2 id="story-h">One promise, two repos</h2>
       <ol class="demo" id="demo">
         <li><h3>Monday, in website</h3><p>You promise your agent the pricing page. Wake writes a to-do.</p><p class="todo"><i aria-hidden="true"></i>Add the pricing page</p></li>
-        <li><h3>Wednesday, in checkout</h3><p>You open a session in another repo. It already sees that to-do.</p><p class="todo"><i aria-hidden="true"></i>Add the pricing page</p></li>
-        <li><h3>Done</h3><p>That session ships it, and Wake ticks it off with a receipt.</p><p class="todo"><i aria-hidden="true"></i>Add the pricing page</p></li>
+        <li><h3>Wednesday, in checkout</h3><p>A session in another repo builds the page and commits it.</p><p class="todo"><i aria-hidden="true"></i>Add the pricing page</p></li>
+        <li><h3>Done</h3><p>When that session ends, Wake matches the work to the to-do, ticks it off and writes a receipt.</p><p class="todo"><i aria-hidden="true"></i>Add the pricing page</p></li>
       </ol>
-      <p class="receipt"><b>Done: add the pricing page</b> <span>promised Mon in website → done Wed in checkout, session “Pricing page”</span></p>
+      <p class="receipt"><b>Done: add the pricing page</b> <span>promised Mon in website → done Wed in checkout, session “Pricing page”, commit 4f2a91c</span></p>
       <button type="button" class="replay" id="replay" hidden>Play it again</button>
     </div>
     <figure class="proof">
@@ -106,7 +106,7 @@
     <div class="split">
       <div class="split-text">
         <h3>Agents do, you do</h3>
-        <p>Every to-do says who does it. Hand one to your agents and the next session picks it up. Take it back with one click.</p>
+        <p>Every to-do says who does it, and it is yours unless you hand it over. An agent's to-do only counts as done when the session that did it made a commit. The receipt keeps the hash. Take it back with one click.</p>
       </div>
       <div class="handoff" aria-hidden="true">
         <p class="row"><i class="tick"></i><span><b>Send Priya the import format</b><small>Due 13 Nov, for you</small></span><em>Hand to agents</em></p>
@@ -135,7 +135,7 @@
   <section class="how" aria-labelledby="how-h">
     <div class="how-text">
       <h2 id="how-h">It fills itself</h2>
-      <p>A finished session becomes a note, and the note updates the to-dos and decisions every agent reads next.</p>
+      <p>A hook runs when a session ends, so the note gets written whether or not anyone remembers. A new session starts with that repo's open to-dos, up to 12, and its last 5 decisions. Finished to-dos leave the list, so it stays short.</p>
       <p class="note">A note costs about 12,000 Haiku tokens in and 2,000 out for a typical session, and up to about 30,000 in for a long one, on your own Claude plan.</p>
     </div>
     <div class="diagram" role="img" aria-label="A finished Claude Code or Codex session becomes one Haiku note in your vault, which updates the to-dos and decisions every agent reads. Meetings and your calendar feed the same vault and a morning brief.">
@@ -214,10 +214,10 @@
   <section class="needs" aria-labelledby="needs-h">
     <h2 id="needs-h">What it needs</h2>
     <dl>
-      <div><dt>A Mac</dt><dd>macOS with Python 3.9 or newer.</dd></div>
+      <div><dt>A Mac</dt><dd>macOS 12 or newer, with Python 3.9 or newer.</dd></div>
       <div><dt>Claude Code or Codex</dt><dd>Notes are written through your own Claude Code sign-in, or through Codex. No API key. Both agents read the same to-dos and decisions.</dd></div>
       <div><dt>Connectors</dt><dd>Optional, and off until you turn them on. See <a href="#works">integrations</a>.</dd></div>
-      <div><dt>First open</dt><dd>Wake is a direct download. The first time, macOS says it cannot check it: press Done, open System Settings, Privacy and Security, and press Open Anyway. On macOS 14 and earlier, right-click Wake and choose Open.</dd></div>
+      <div id="first-open"><dt>First open</dt><dd>Wake is a direct download, so macOS asks before it opens it. You do this once. Open Wake and press Done on the warning. Then open System Settings, Privacy &amp; Security, scroll down to Security and press Open Anyway. On macOS 14 and earlier, right-click Wake and choose Open. One line in Terminal does the same: <code>xattr -dr com.apple.quarantine /Applications/Wake.app</code>. The steps are also in the download and in your receipt.</dd></div>
     </dl>
   </section>
 
@@ -229,13 +229,14 @@
         <p class="price">$59 <span>once, a year of updates</span></p>
         <ul>
           <li>The whole app: today, inbox, projects, library, map, boards, decisions</li>
-          <li>Every agent sees your to-dos and decisions, in every repo</li>
+          <li>A note for every finished session, written when it ends</li>
+          <li>Each new session starts with its repo's open to-dos and last decisions</li>
           <li>Meetings and calendar in your vault, and a morning brief</li>
-          <li>Agents tick off to-dos when they finish them, with proof</li>
+          <li>An agent's to-do closes only when a commit landed, with a receipt</li>
           <li>Ask your brain, and web research</li>
         </ul>
         <a class="btn primary" href="https://buy.polar.sh/polar_cl_RY5sufCcn7mrCrFExtuwMNFq7HFmd3nYXogRp3LDhf8" data-buy>Buy Wake, $59</a>
-        <p class="fine">Pay once, download right away. Your licence key comes by email.</p>
+        <p class="fine">Pay once, download right away. Your licence key comes by email and works on 2 Macs. Needs macOS and Claude Code or Codex. <a href="#first-open">Opening it the first time</a> takes one extra step. Not sure yet? <a href="demo/">Try the demo</a>.</p>
       </div>
       <div class="plan">
         <h3>Wake + sync <span class="coming">Coming</span></h3>
@@ -306,14 +307,30 @@
         <summary>And with Super Brain?</summary>
         <p>With Super Brain your notes stay on your own devices. Your phone, and each person you invite, reads straight from your Mac, encrypted the whole way, so no one in between can read your notes. Every request is checked on your Mac. Disconnect a phone in Settings and it is out on its next request.</p>
       </details>
+      <details>
+        <summary>Can I try it before I pay?</summary>
+        <p>Yes. The <a href="demo/">demo</a> is the real app in your browser, on invented notes. It is read-only, so nothing you do there is saved.</p>
+      </details>
+      <details>
+        <summary>How many Macs can I use it on?</summary>
+        <p>Two. To move Wake to another Mac, press Deactivate this Mac in Settings on the old one, then enter your key on the new one.</p>
+      </details>
+      <details>
+        <summary>How do updates arrive?</summary>
+        <p>You get a year of updates. Download the newest Wake from your <a href="https://polar.sh/wakebrain/portal">Polar purchases page</a> and drag it over the old one. Wake does not check for updates or install them by itself.</p>
+      </details>
+      <details>
+        <summary>Can I get a refund?</summary>
+        <p>Yes, within 14 days of buying. Email <a href="mailto:wakebrain.app@gmail.com">wakebrain.app@gmail.com</a> and you get your money back.</p>
+      </details>
     </div>
   </section>
 </main>
 
 <footer class="foot">
   <p class="mark">Wake</p>
-  <div><a href="#app">The app</a><a href="#works">Integrations</a><a href="#pricing">Pricing</a><a href="#waitlist">Waitlist</a></div>
-  <div><p>Questions, a lost key, a bug</p><a href="mailto:wakebrain.app@gmail.com">wakebrain.app@gmail.com</a></div>
+  <div><a href="demo/">Demo</a><a href="#app">The app</a><a href="#works">Integrations</a><a href="#pricing">Pricing</a><a href="#waitlist">Waitlist</a></div>
+  <div><p>Questions, a lost key, a bug</p><a href="mailto:wakebrain.app@gmail.com">wakebrain.app@gmail.com</a><p>$59 once plus local tax, sold through Polar. Refund within 14 days of buying: email us.</p></div>
 </footer>
 <script src="graph.js"></script>
 <script src="ember-engine.js"></script>
