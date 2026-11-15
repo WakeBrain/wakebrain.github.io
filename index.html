@@ -106,7 +106,7 @@
     <div class="split">
       <div class="split-text">
         <h3>Agents do, you do</h3>
-        <p>Every to-do says who does it. Hand one to your agents, or take it back, with one click. An agent's to-do only counts as done when the session that did it made a commit, and the receipt keeps the hash.</p>
+        <p>Every to-do says who does it. Hand one to your agents, or take it back, with one click. An agent's to-do only counts as done when the repo got a commit during that session. The receipt keeps the hash.</p>
       </div>
       <div class="handoff" aria-hidden="true">
         <p class="row"><i class="tick"></i><span><b>Send Priya the import format</b><small>Due 13 Nov, for you</small></span><em>Hand to agents</em></p>
@@ -135,7 +135,7 @@
   <section class="how" aria-labelledby="how-h">
     <div class="how-text">
       <h2 id="how-h">It fills itself</h2>
-      <p>A hook runs when a session ends, so the note gets written whether or not anyone remembers. A new session starts with that repo's open to-dos, up to 12, and its last 5 decisions. Finished to-dos leave the list, so it stays short.</p>
+      <p>A hook writes the note when a session ends. You don't have to remember to ask for it. A new session starts with that repo's open to-dos, up to 12, and its last 5 decisions. Finished to-dos leave the list, so it stays short.</p>
       <p class="note">A note costs about 12,000 Haiku tokens in and 2,000 out for a typical session, and up to about 30,000 in for a long one, on your own Claude plan.</p>
     </div>
     <div class="diagram" role="img" aria-label="A finished Claude Code or Codex session becomes one Haiku note in your vault, which updates the to-dos and decisions every agent reads. Meetings and your calendar feed the same vault and a morning brief.">
@@ -236,7 +236,8 @@
           <li>Ask your brain, and web research</li>
         </ul>
         <a class="btn primary" href="https://buy.polar.sh/polar_cl_RY5sufCcn7mrCrFExtuwMNFq7HFmd3nYXogRp3LDhf8" data-buy>Buy Wake, $59</a>
-        <p class="fine">Pay once, download right away. Your licence key comes by email and works on 2 Macs. Needs macOS and Claude Code or Codex. <a href="#first-open">Opening it the first time</a> takes one extra step. Not sure yet? <a href="demo/">Try the demo</a>.</p>
+        <p class="fine">Pay once, download right away. Your licence key comes by email and works on 2 Macs. Needs macOS and Claude Code or Codex.</p>
+        <p class="fine"><a href="#first-open">Opening it the first time</a> takes one extra step. Not sure yet? <a href="demo/">Try the demo</a>.</p>
       </div>
       <div class="plan">
         <h3>Wake + sync <span class="coming">Coming</span></h3>
@@ -301,7 +302,7 @@
       <h3>Questions</h3>
       <details open>
         <summary>Does my code leave my machine?</summary>
-        <p>There is no Wake server. Three things leave on their own. When a session ends, a trimmed transcript goes to the model through your own Claude Code or Codex sign-in. Every morning, the titles of yesterday's sessions and your open to-dos go out for the brief. When you enter your licence key, and about once a week after that, Wake checks it with Polar. It sends the key, Wake's Polar organisation ID and the ID Polar gave this Mac. The first time, it also sends a label with the date, like “Mac, 2026-11-15”. It sends nothing from your notes, and no computer or user name. Ask and Research send what they read, only when you use them. Slack, Jira, meetings and calendar are off until you connect them. If you add a git remote to the vault folder, Wake pushes to it. Settings shows all of this, with the exact prompt, and a never-send list per project.</p>
+        <p>There is no Wake server. Three things leave on their own. When a session ends, a trimmed transcript goes to the model through your own Claude Code or Codex sign-in. Every morning, the titles of yesterday's sessions and your open to-dos go out for the brief. When you enter your licence key, and about once a week after that, Wake checks it with Polar. It sends the key, Wake's Polar organisation ID and the ID Polar gave this Mac. The first time, it also sends a label with the date, like “Mac, 2026-11-15”. Your notes, your computer's name and your user name are never part of it. Ask and Research send what they read, only when you use them. Slack, Jira, meetings and calendar are off until you connect them. If you add a git remote to the vault folder, Wake pushes to it. Settings shows all of this, with the exact prompt, and a never-send list per project.</p>
       </details>
       <details>
         <summary>And with Super Brain?</summary>
